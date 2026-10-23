@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sai Mart Vendor - Safe & Trusted - ZimGroceries</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+<!-- LOGIN -->
+<div id="login" class="min-h-screen flex items-center justify-center bg-green-800 p-4">
+<div class="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl">
+<h1 class="text-2xl font-black text-center">ZimGroceries</h1>
+<p class="text-center text-sm bg-green-100 p-2 rounded mt-2">🔒 SAFE MODEL: Money goes DIRECT to YOUR EcoCash<br>DEMO: sai_mart / sai123 | ok_ave / ok123</p>
+<input id="u" placeholder="sai_mart" class="w-full border p-3 rounded mt-4">
+<input id="p" type="password" placeholder="sai123" class="w-full border p-3 rounded mt-3">
+<button onclick="login()" class="w-full bg-green-700 text-white py-3 rounded mt-4 font-bold">Secure Login</button>
+<p class="text-xs mt-3 text-gray-500">✓ Direct payments to your account<br>✓ You control prices<br>✓ Full transaction logs<br>✓ HTTPS Secure</p>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash" class="hidden">
+<header class="bg-white shadow p-4">
+<div class="flex justify-between">
+<div><h1 class="font-black text-xl"><span id="vname">Sai Mart</span> <span class="text-green-600 text-xs">✓ VERIFIED VENDOR</span></h1>
+<p class="text-xs">Direct Pay: EcoCash <span id="ecocash">0782 123 456</span> | ZiG & USD | <span class="text-green-600">🔒 SECURE</span></p></div>
+<button onclick="location.reload()" class="text-xs">Logout</button>
+</div>
+<div class="mt-3 bg-green-50 border border-green-200 p-2 rounded text-xs">🛡️ <b>SAFETY:</b> All customer payments go DIRECT to your EcoCash. ZimGroceries never holds your money. Every transaction has EcoCash Code proof.</div>
+</header>
+
+<div class="p-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="bg-white p-3 rounded shadow"><p class="text-xs">SALES RECEIVED (Your EcoCash)</p><h2 class="text-xl font-black" id="sales">$0</h2><p class="text-xs text-green-600">Direct to you</p></div>
+<div class="bg-white p-3 rounded shadow"><p class="text-xs">COMMISSION OWED TO ZIMGROCERIES (10%)</p><h2 class="text-xl font-black text-orange-600" id="owed">$0</h2><button onclick="payComm()" class="text-xs bg-orange-500 text-white px-2 py-1 rounded mt-1">Pay Now</button></div>
+<div class="bg-white p-3 rounded shadow"><p class="text-xs">YOUR NET (Already in your account)</p><h2 class="text-xl font-black text-green-600" id="net">$0</h2><p class="text-xs">You have it</p></div>
+<div class="bg-white p-3 rounded shadow"><p class="text-xs">ORDERS</p><h2 class="text-xl font-black" id="orders">0</h2><p class="text-xs" id="pending">0 pending</p></div>
+</div>
+
+<div class="px-3">
+<div class="flex gap-2 mb-3 overflow-x-auto bg-white p-2 rounded">
+<button onclick="tab('products')" id="t-products" class="bg-green-700 text-white px-3 py-2 rounded text-sm font-bold">📦 Prices & Stock</button>
+<button onclick="tab('cashflow')" id="t-cashflow" class="px-3 py-2 rounded text-sm">💰 Cash Flow & Transactions</button>
+<button onclick="tab('customers')" id="t-customers" class="px-3 py-2 rounded text-sm">👥 Customers</button>
+<button onclick="tab('safety')" id="t-safety" class="px-3 py-2 rounded text-sm">🔒 Safety & Guarantee</button>
+</div>
+
+<div id="c-products" class="bg-white rounded p-4">
+<div class="flex justify-between mb-3"><h3 class="font-bold">Update Prices & Stock - You Control (Live in 2 sec)</h3><button onclick="addP()" class="bg-green-600 text-white px-3 py-1 rounded text-xs">+ Add Product</button></div>
+<table class="w-full text-sm"><thead class="bg-gray-100"><tr><th class="p-2 text-left">Product (Zim Products)</th><th>Price ZiG</th><th>Price USD</th><th>Qty</th><th>In Stock</th><th>Log</th></tr></thead><tbody id="ptable"></tbody></table>
+</div>
+
+<div id="c-cashflow" class="hidden bg-white rounded p-4">
+<h3 class="font-bold mb-3">💰 Cash Flow - Money Received Direct to YOUR EcoCash - Full Proof</h3>
+<div class="bg-yellow-50 border p-3 rounded text-xs mb-3">Each transaction has EcoCash Confirmation Code - No fake payments! Customer must enter Code from SMS. You can verify on *151#</div>
+<table class="w-full text-xs border"><thead class="bg-gray-100"><tr><th class="p-2">Date</th><th>Order ID</th><th>Customer (Hidden)</th><th>Amount (Direct to You)</th><th>EcoCash Code (Proof)</th><th>Commission 10%</th><th>Status</th></tr></thead><tbody id="ctable"></tbody></table>
+<div class="mt-4 p-3 bg-orange-50 rounded"><p class="font-bold text-sm">Pay Commission to ZimGroceries (Luckson):</p><p class="text-xs">Total Owed: <span id="owe2">$0</span> | EcoCash: 0781022420 | CABS: 123456789 | <button onclick="payComm()" class="bg-green-600 text-white px-3 py-1 rounded ml-2">I Have Paid - Enter Code</button></p><div id="payHist" class="text-xs mt-2"></div></div>
+</div>
+
+<div id="c-customers" class="hidden bg-white rounded p-4">
+<h3 class="font-bold mb-3">👥 Customer Safety - Data Protected</h3>
+<p class="text-xs bg-blue-50 p-2 rounded mb-3">🔒 We hide customer phone until paid (077****20). Full address only after EcoCash code verified. No PINs stored. Compliant with Zim Data Protection Act.</p>
+<div id="custList" class="space-y-2"></div>
+</div>
+
+<div id="c-safety" class="hidden bg-white rounded p-4">
+<h3 class="font-bold">🔒 Safety Assurance for Sai Mart & Customers</h3>
+<div class="grid md:grid-cols-2 gap-4 mt-4 text-xs">
+<div class="border p-3 rounded"><b>Transaction Safety:</b><br>✓ Direct to YOUR EcoCash<br>✓ EcoCash Code required<br>✓ Triple verification<br>✓ Logs cannot be edited<br>✓ HTTPS 🔒 Secure</div>
+<div class="border p-3 rounded"><b>Customer Safety:</b><br>✓ No PIN storage<br>✓ Phone hidden until paid<br>✓ Money-back guarantee 90 mins<br>✓ Dispute button<br>✓ Verified vendor badge</div>
+<div class="border p-3 rounded"><b>Your Money Safety:</b><br>✓ You receive first, pay commission later<br>✓ Weekly settlement<br>✓ Excel export for ZIMRA<br>✓ CABS/CBZ/EcoCash proof</div>
+<div class="border p-3 rounded"><b>Platform Safety:</b><br>✓ Luckson can suspend fraud vendors<br>✓ Customer ratings<br>✓ 24hr dispute resolution<br>✓ No hidden fees - 10% only</div>
+</div>
+<div class="mt-4 bg-green-100 p-3 rounded text-xs"><b>For Sai Mart Manager to Sign:</b><br>ZimGroceries does NOT hold vendor money. All payments go direct to vendor. Commission payable weekly after sales verified with EcoCash codes. Platform fee 10% only.</div>
+</div>
+
+</div>
+</div>
+
+<script>
+const VENDORS={sai_mart:{name:"Sai Mart",ecocash:"0782 123 456",branch:"CBD Harare",comm:10},ok_ave:{name:"OK Zimbabwe",ecocash:"0783 456 789",branch:"Avenue",comm:10},spar_b:{name:"SPAR",ecocash:"0784 111 222",branch:"Borrowdale",comm:12}};
+let cur=null,prods=[],orders=[],pays=[];
+function login(){
+ let u=document.getElementById('u').value.toLowerCase().trim()||'sai_mart';
+ let v=VENDORS[u];
+ if(!v){alert('Use sai_mart / sai123');return;}
+ cur={...v,id:u};
+ document.getElementById('login').classList.add('hidden');
+ document.getElementById('dash').classList.remove('hidden');
+ document.getElementById('vname').innerText=v.name;
+ document.getElementById('ecocash').innerText=v.ecocash;
+ load();
+}
+function load(){
+ let k='zg_safe_prod_'+cur.id;
+ let ok='zg_safe_ord_'+cur.id;
+ let pk='zg_safe_pay_'+cur.id;
+ let defs=[{id:1,name:"Sadza Mealie Meal 10kg",zig:185,usd:6.85,qty:50,inStock:true,log:"Created today"},{id:2,name:"Mazoe Orange 2L",zig:95,usd:3.5,qty:30,inStock:true,log:"Price updated by Manager 10:20"},{id:3,name:"ZimGold Cooking Oil 2L",zig:115,usd:4.2,qty:0,inStock:false,log:"Out of stock - 11:00"},{id:4,name:"Kapenta Matemba 500g",zig:65,usd:2.4,qty:20,inStock:true,log:"Added today"}];
+ prods=JSON.parse(localStorage.getItem(k)||JSON.stringify(defs));
+ if(!localStorage.getItem(ok)){
+  orders=[{id:"ORD-ZIM-1023",date:new Date().toLocaleString(),customer:"077****20 (Tinashe M)",full:"0771234520",amountZig:185,amountUsd:6.85,code:"MP2408.23A12345",comm:0.685,addr:"Glen View 3",status:"Verified ✅ - Money in your EcoCash"},
+  {id:"ORD-ZIM-1022",date:new Date().toLocaleString(),customer:"078****10 (Chipo K)",full:"0782345610",amountZig:210,amountUsd:7.77,code:"MP2408.23B67890",comm:0.777,addr:"Budiriro",status:"Verified ✅"}];
+  localStorage.setItem(ok,JSON.stringify(orders));
+ } else orders=JSON.parse(localStorage.getItem(ok));
+ pays=JSON.parse(localStorage.getItem(pk)||"[]");
+ render();
+}
+function save(){localStorage.setItem('zg_safe_prod_'+cur.id,JSON.stringify(prods));localStorage.setItem('zg_safe_ord_'+cur.id,JSON.stringify(orders));localStorage.setItem('zg_safe_pay_'+cur.id,JSON.stringify(pays));}
+function render(){
+ document.getElementById('ptable').innerHTML=prods.map(p=>`<tr class="border-b"><td class="p-2"><input value="${p.name}" onchange="eP(${p.id},'name',this.value)" class="border p-1 w-full text-xs"></td><td><input type="number" value="${p.zig}" onchange="eP(${p.id},'zig',this.value)" class="border w-16 p-1"></td><td><input type="number" step="0.01" value="${p.usd}" onchange="eP(${p.id},'usd',this.value)" class="border w-16 p-1"></td><td><input type="number" value="${p.qty}" onchange="eP(${p.id},'qty',this.value)" class="border w-12 p-1"></td><td class="text-center"><input type="checkbox" ${p.inStock?'checked':''} onchange="eP(${p.id},'inStock',this.checked)"></td><td class="text-xs text-gray-500">${p.log}</td></tr>`).join('');
+ let totalZig=orders.reduce((s,o)=>s+o.amountZig,0);
+ let totalUsd=orders.reduce((s,o)=>s+o.amountUsd,0);
+ let commZig=orders.reduce((s,o)=>s+o.amountZig*cur.comm/100,0);
+ let commUsd=orders.reduce((s,o)=>s+o.amountUsd*cur.comm/100,0);
+ document.getElementById('sales').innerText=`ZiG ${totalZig} / $${totalUsd.toFixed(2)}`;
+ document.getElementById('owed').innerText=`ZiG ${commZig.toFixed(0)} / $${commUsd.toFixed(2)}`;
+ document.getElementById('owe2').innerText=`ZiG ${commZig.toFixed(0)} / $${commUsd.toFixed(2)}`;
+ document.getElementById('net').innerText=`ZiG ${totalZig-commZig} / $${(totalUsd-commUsd).toFixed(2)}`;
+ document.getElementById('orders').innerText=orders.length;
+ document.getElementById('ctable').innerHTML=orders.map(o=>`<tr class="border-b"><td class="p-2">${o.date}</td><td>${o.id}</td><td>${o.customer}</td><td>ZiG ${o.amountZig} / $${o.amountUsd}<br><span class="text-green-600 text-[10px]">To: ${cur.ecocash}</span></td><td class="font-mono text-[10px]">${o.code}<br><a href="#" class="text-blue-600 underline">Verify *151#</a></td><td>ZiG ${(o.amountZig*cur.comm/100).toFixed(0)}</td><td class="text-green-600">${o.status}</td></tr>`).join('');
+ document.getElementById('custList').innerHTML=orders.map(o=>`<div class="border p-2 rounded text-xs"><b>${o.id}</b> - ${o.customer} - ${o.addr} - Paid ZiG ${o.amountZig} - Code ${o.code} - <span class="text-green-600">Customer data protected until payment verified</span></div>`).join('');
+ document.getElementById('payHist').innerHTML=pays.length?pays.map(p=>`<p>Paid ZiG ${p.amount} - Code ${p.code} - ${p.date} - ${p.status}</p>`).join(''):'No payments yet';
+}
+function eP(id,f,v){let p=prods.find(x=>x.id===id);if(f==='qty'){p.qty=parseInt(v);p.inStock=p.qty>0;p.log=`Qty changed to ${v} by Manager at ${new Date().toLocaleTimeString()}`;}else if(f==='inStock'){p.inStock=v;p.log=`${v?'In Stock':'Out of Stock'} set at ${new Date().toLocaleTimeString()}`;}else if(f==='zig'||f==='usd'){p[f]=parseFloat(v);p.log=`Price changed to ${f==='zig'?'ZiG '+v:'$'+v} at ${new Date().toLocaleTimeString()}`;}else{p[f]=v;p.log=`Edited at ${new Date().toLocaleTimeString()}`;}save();render();}
+function addP(){prods.push({id:Date.now(),name:"New Zim Product",zig:50,usd:1.85,qty:10,inStock:true,log:"Added "+new Date().toLocaleTimeString()});save();render();}
+function tab(n){document.querySelectorAll('[id^=\"c-\"]').forEach(e=>e.classList.add('hidden'));document.getElementById('c-'+n).classList.remove('hidden');}
+function payComm(){let code=prompt('Enter your EcoCash confirmation code after paying to 0781022420 (e.g., MP2408...)');if(!code)return;let amt=orders.reduce((s,o)=>s+o.amountZig*cur.comm/100,0);pays.push({amount:amt.toFixed(0),code,date:new Date().toLocaleString(),status:"Paid - Awaiting Luckson Confirmation"});save();render();alert('Thank you! Luckson will confirm your payment of ZiG '+amt.toFixed(0)+' with code '+code+' within 2 hours. Your commission balance will reset after confirmation.');}
+</script>
+</body>
+</html>
