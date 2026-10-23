@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZimGroceries - Harare's Fastest Grocery Delivery</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#f4f8f4}
+.header{background:white;padding:12px 16px;position:sticky;top:0;z-index:20;box-shadow:0 2px 12px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+.logo{font-weight:900;color:#0E7A3D;font-size:22px;line-height:1}
+.logo span{color:#FF7A00;font-size:10px;display:block}
+.cart-btn{background:#0E7A3D;color:white;border:none;padding:10px 18px;border-radius:25px;font-weight:800;font-size:16px}
+.banner{background:linear-gradient(90deg,#0E7A3D,#FF7A00);color:white;margin:12px;border-radius:12px;padding:16px;text-align:center;font-weight:800}
+.search{margin:12px;background:white;border:2px solid #0E7A3D;border-radius:25px;padding:14px;width:calc(100% - 24px);font-size:16px}
+.section{padding:16px 16px 8px;font-weight:900;font-size:20px;color:#0E7A3D}
+.product{background:white;margin:10px 16px;padding:14px;border-radius:16px;display:flex;gap:12px;box-shadow:0 3px 10px rgba(0,0,0,0.07);align-items:center}
+.product img{width:60px;height:60px;border-radius:12px;object-fit:cover;background:#eee}
+.product-info{flex:1}
+.product .price{color:#0E7A3D;font-weight:900;font-size:18px}
+.btn{background:#FF7A00;color:white;border:none;padding:10px 18px;border-radius:25px;font-weight:800}
+.store{background:white;margin:8px 16px;padding:14px;border-radius:14px;display:flex;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.06);border-left:4px solid #0E7A3D}
+.cart-view{position:fixed;bottom:0;left:0;right:0;background:white;border-top-left-radius:24px;border-top-right-radius:24px;box-shadow:0 -5px 30px rgba(0,0,0,0.2);padding:20px;max-height:90vh;overflow-y:auto;display:none;z-index:30}
+.cart-view.open{display:block}
+.payment-opt{margin:8px 0;background:#f9f9f9;padding:14px;border-radius:12px;border:2px solid #eee;display:flex;justify-content:space-between;align-items:center}
+.payment-opt.selected{border-color:#0E7A3D;background:#eaf7ee;font-weight:800}
+.total{font-size:24px;font-weight:900;color:#0E7A3D;margin:15px 0;text-align:center}
+.place{width:100%;background:#25D366;color:white;border:none;padding:18px;border-radius:14px;font-size:20px;font-weight:900;display:flex;justify-content:center;gap:10px}
+.input{width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;margin-top:6px;font-size:16px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">🛒 ZimGroceries<span>www.zimgroceries.co.zw | HARARE</span></div>
+  <button class="cart-btn" onclick="openCart()">🛒 <span id="count">0</span></button>
+</div>
+
+<div class="banner">
+  🔥 NOW OPEN IN HARARE - 15% OFF FIRST ORDER<br>
+  <small>Use Code: WELCOME15 • EcoCash • Cash • Delivered in 60 mins</small>
+</div>
+
+<input class="search" id="search" placeholder="🔍 Search tomatoes, bread, oil..." onkeyup="filterProducts()">
+
+<div class="section">🏪 Nearby Stores</div>
+<div class="store"><div><b>OK Zimbabwe - Samora Machel</b><br><small>1.2km • Open • 7am-9pm • ⭐ 4.8</small></div><div>✅</div></div>
+<div class="store"><div><b>TM Supermarkets - Borrowdale</b><br><small>2.4km • Open • 8am-9pm • ⭐ 4.7</small></div><div>✅</div></div>
+
+<div class="section">🔥 Popular Today</div>
+<div id="products"></div>
+
+<div class="cart-view" id="cartView">
+  <h2 style="color:#0E7A3D">Your Cart 🛒</h2>
+  <div id="cartItems" style="margin:15px 0"></div>
+  
+  <h3>Delivery Details</h3>
+  <p><small>Full Name</small><input id="custName" class="input" placeholder="Luckson Muzava"></p>
+  <p style="margin-top:8px"><small>Delivery Address in Harare</small><input id="address" class="input" value="12 Samora Machel Ave, Harare"></p>
+  <p style="margin-top:8px"><small>Your Phone (for delivery updates)</small><input id="phone" class="input" placeholder="077xxxxxxx"></p>
+  
+  <h3 style="margin-top:15px">Pay With</h3>
+  <div class="payment-opt selected" onclick="selectPay(this,'EcoCash')"><span>💚 <b>EcoCash</b></span><span>✓</span></div>
+  <div class="payment-opt" onclick="selectPay(this,'OneMoney')"><span>🧡 <b>OneMoney</b></span><span></span></div>
+  <div class="payment-opt" onclick="selectPay(this,'InnBucks')"><span>💙 <b>InnBucks</b></span><span></span></div>
+  <div class="payment-opt" onclick="selectPay(this,'Cash on Delivery')"><span>💵 <b>Cash on Delivery</b></span><span></span></div>
+
+  <div class="total">Total: US$ <span id="total">0.00</span><br><small style="font-size:12px;color:#666">Includes US$1.50 delivery</small></div>
+  
+  <button class="place" onclick="placeOrder()">📱 Order via WhatsApp - <span id="payMethod">EcoCash</span></button>
+  <p style="text-align:center;margin-top:10px"><small>Order will be sent to ZimGroceries: 0781022420</small></p>
+  <button onclick="closeCart()" style="width:100%;margin-top:12px;padding:12px;background:#eee;border:none;border-radius:10px">Continue Shopping</button>
+</div>
+
+<script>
+const allProducts=[
+  {id:1,name:"Fresh Tomatoes 500g",price:1.50,img:"https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=200"},
+  {id:2,name:"Cooking Oil 2L",price:4.20,img:"https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=200"},
+  {id:3,name:"Brown Bread 700g",price:1.20,img:"https://images.unsplash.com/photo-1549931319-a545dcf3d696?w=200"},
+  {id:4,name:"Mealie Meal 1kg",price:2.50,img:"https://images.unsplash.com/photo-1586201375761-3860e93fb0be?w=200"},
+  {id:5,name:"Mazoe Orange 2L",price:2.80,img:"https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200"},
+  {id:6,name:"Milk 1L",price:1.80,img:"https://images.unsplash.com/photo-1550583724-b2692b85b150?w=200"},
+  {id:7,name:"Rice 2kg",price:3.50,img:"https://images.unsplash.com/photo-1586201375761-3860e93fb0be?w=200"},
+  {id:8,name:"Chicken 1kg",price:5.00,img:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=200"}
+];
+let cart=[]; let selectedPayment="EcoCash";
+function renderProducts(list=allProducts){
+  document.getElementById('products').innerHTML=list.map(p=>`
+    <div class="product">
+      <img src="${p.img}" alt="">
+      <div class="product-info"><b>${p.name}</b><br><span class="price">US$${p.price.toFixed(2)}</span></div>
+      <button class="btn" onclick="addToCart(${p.id})">+ Add</button>
+    </div>
+  `).join('');
+}
+function filterProducts(){
+  const q=document.getElementById('search').value.toLowerCase();
+  renderProducts(allProducts.filter(p=>p.name.toLowerCase().includes(q)));
+}
+function addToCart(id){
+  const p=allProducts.find(x=>x.id===id); cart.push(p);
+  document.getElementById('count').innerText=cart.length;
+  updateCart();
+}
+function openCart(){document.getElementById('cartView').classList.add('open'); updateCart();}
+function closeCart(){document.getElementById('cartView').classList.remove('open');}
+function updateCart(){
+  let sub=cart.reduce((s,i)=>s+i.price,0);
+  let total=sub + (cart.length>0?1.5:0);
+  document.getElementById('total').innerText=total.toFixed(2);
+  document.getElementById('cartItems').innerHTML=cart.map((c,i)=>`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span>${c.name}</span><span>US$${c.price} <a onclick="removeItem(${i})" style="color:red;margin-left:10px">x</a></span></div>`).join('') || "<p style='text-align:center;padding:20px'>Cart empty - add products!</p>";
+}
+function removeItem(i){cart.splice(i,1); document.getElementById('count').innerText=cart.length; updateCart();}
+function selectPay(el,method){document.querySelectorAll('.payment-opt').forEach(e=>{e.classList.remove('selected'); e.lastElementChild.innerText="";}); el.classList.add('selected'); el.lastElementChild.innerText="✓"; selectedPayment=method; document.getElementById('payMethod').innerText=method;}
+function placeOrder(){
+  const name=document.getElementById('custName').value || "Customer";
+  const phone=document.getElementById('phone').value;
+  const address=document.getElementById('address').value;
+  if(cart.length===0) return alert("Cart empty! Add products first");
+  if(!phone) return alert("Please enter your phone number");
+  
+  let itemsText=cart.map(c=>`• ${c.name} - US$${c.price}`).join('%0A');
+  let sub=cart.reduce((s,i)=>s+i.price,0);
+  let total=sub+1.5;
+  
+  let message=`🛒 *NEW ZIMGROCERIES ORDER*%0A%0A👤 Name: ${name}%0A📱 Customer Phone: ${phone}%0A📍 Address: ${address}%0A%0A🛍️ *ITEMS:*%0A${itemsText}%0A%0A💰 Subtotal: US$${sub.toFixed(2)}%0A🚚 Delivery: US$1.50%0A💵 *TOTAL: US$${total.toFixed(2)}*%0A%0A💳 Payment: ${selectedPayment}%0A%0A🌐 From: www.zimgroceries.co.zw%0A⏰ Please confirm delivery time!`;
+  
+  let waNumber="263781022420";
+  let waLink=`https://wa.me/${waNumber}?text=${message}`;
+  
+  window.open(waLink, '_blank');
+  
+  alert(`Order sent to WhatsApp!\\n\\nTotal US$${total.toFixed(2)}\\nWe will confirm on ${phone} shortly!`);
+  cart=[]; document.getElementById('count').innerText=0; closeCart();
+}
+renderProducts();
+</script>
+</body>
+</html>
