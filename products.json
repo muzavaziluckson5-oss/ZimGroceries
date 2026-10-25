@@ -1,9 +1,16 @@
 [
-  {"name":"Tomatoes 1kg","cost":1,"stock":120,"shop":"baraj-mart","category":"Vegetables"},
-  {"name":"Onions 1kg","cost":1.2,"stock":80,"shop":"baraj-mart","category":"Vegetables"},
-  {"name":"Cooking Oil 2L","cost":3.5,"stock":50,"shop":"baraj-mart","category":"Groceries"},
-  {"name":"Mealie Meal 10kg","cost":8,"stock":30,"shop":"baraj-mart","category":"Groceries"},
-  {"name":"Sugar 2kg","cost":2.2,"stock":40,"shop":"baraj-mart","category":"Groceries"},
-  {"name":"Bread Loaf","cost":1,"stock":100,"shop":"baraj-mart","category":"Bakery"},
-  {"name":"Eggs Tray 30","cost":7,"stock":20,"shop":"baraj-mart","category":"Dairy"}
+  {"name": "Tomatoes 1kg", "cost": 1.0, "stock": 50, "category": "Vegetables", "shop": "baraj-mart"},
+  {"name": "Onions 1kg", "cost": 1.2, "stock": 40, "category": "Vegetables", "shop": "baraj-mart"},
+  {"name": "Cooking Oil 2L", "cost": 3.5, "stock": 20, "category": "Groceries", "shop": "baraj-mart"},
+  {"name": "Bread Loaf", "cost": 1.0, "stock": 30, "category": "Bakery", "shop": "baraj-mart"},
+  {"name": "Nike Air Force 1 White", "cost": 35.0, "stock": 12, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "Nike Air Force 1 Black", "cost": 35.0, "stock": 10, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "Jordan 1 Retro High", "cost": 45.0, "stock": 8, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "Jordan 4 Black Cat", "cost": 50.0, "stock": 6, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "New Balance 550 White", "cost": 40.0, "stock": 10, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "New Balance 2002R Grey", "cost": 42.0, "stock": 7, "category": "Shoes", "shop": "classic-shoes"},
+  {"name": "Adidas Slides Adilette", "cost": 15.0, "stock": 20, "category": "Slides", "shop": "classic-shoes"},
+  {"name": "Adidas Slides Black", "cost": 15.0, "stock": 15, "category": "Slides", "shop": "classic-shoes"},
+  {"name": "Classic T-Shirt White", "cost": 8.0, "stock": 25, "category": "T-Shirts", "shop": "classic-shoes"},
+  {"name": "Classic T-Shirt Black", "cost": 8.0, "stock": 25, "category": "T-Shirts", "shop": "classic-shoes"}
 ]
