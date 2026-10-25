@@ -1,16 +1,11 @@
 [
-  {"name": "Tomatoes 1kg", "cost": 1.0, "stock": 50, "category": "Vegetables", "shop": "baraj-mart"},
-  {"name": "Onions 1kg", "cost": 1.2, "stock": 40, "category": "Vegetables", "shop": "baraj-mart"},
-  {"name": "Cooking Oil 2L", "cost": 3.5, "stock": 20, "category": "Groceries", "shop": "baraj-mart"},
-  {"name": "Bread Loaf", "cost": 1.0, "stock": 30, "category": "Bakery", "shop": "baraj-mart"},
-  {"name": "Nike Air Force 1 White", "cost": 35.0, "stock": 12, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "Nike Air Force 1 Black", "cost": 35.0, "stock": 10, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "Jordan 1 Retro High", "cost": 45.0, "stock": 8, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "Jordan 4 Black Cat", "cost": 50.0, "stock": 6, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "New Balance 550 White", "cost": 40.0, "stock": 10, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "New Balance 2002R Grey", "cost": 42.0, "stock": 7, "category": "Shoes", "shop": "classic-shoes"},
-  {"name": "Adidas Slides Adilette", "cost": 15.0, "stock": 20, "category": "Slides", "shop": "classic-shoes"},
-  {"name": "Adidas Slides Black", "cost": 15.0, "stock": 15, "category": "Slides", "shop": "classic-shoes"},
-  {"name": "Classic T-Shirt White", "cost": 8.0, "stock": 25, "category": "T-Shirts", "shop": "classic-shoes"},
-  {"name": "Classic T-Shirt Black", "cost": 8.0, "stock": 25, "category": "T-Shirts", "shop": "classic-shoes"}
+  {"name": "Nike Air Force 1 Triple White AF1", "cost": 25, "stock": 15, "category": "AF1", "shop": "classic-shoes"},
+  {"name": "Nike Air Force 1 Brown Wheat Gum Supreme", "cost": 25, "stock": 12, "category": "AF1", "shop": "classic-shoes"},
+  {"name": "Adidas Postmove SE White Black", "cost": 25, "stock": 12, "category": "Adidas", "shop": "classic-shoes"},
+  {"name": "Jordan 1 Mid Black Bordeaux White", "cost": 30, "stock": 10, "category": "Jordan", "shop": "classic-shoes"},
+  {"name": "New Balance 740 Silver Neon Green", "cost": 30, "stock": 10, "category": "New Balance", "shop": "classic-shoes"},
+  {"name": "Nike TC 7900 White Pink Platform Womens", "cost": 40, "stock": 8, "category": "Nike", "shop": "classic-shoes"},
+  {"name": "Nike Air Max 270 Black Pink Purple Gradient", "cost": 40, "stock": 8, "category": "Air Max", "shop": "classic-shoes"},
+  {"name": "Nike Air Max Plus TN Triple White", "cost": 45, "stock": 10, "category": "Air Max", "shop": "classic-shoes"},
+  {"name": "Timberland 6-Inch Premium Boot Wheat", "cost": 85, "stock": 5, "category": "Boots", "shop": "classic-shoes"}
 ]
