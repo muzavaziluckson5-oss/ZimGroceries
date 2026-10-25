@@ -12,7 +12,7 @@ body{background:#f9f9f0}
 .header p{font-size:14px;color:#ffeb3b}
 .search-bar{padding:15px;background:white;display:flex;gap:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
 .search-bar input{flex:1;padding:12px;border:2px solid #0a5c26;border-radius:8px;font-size:16px}
-.search-bar button{padding:12px 20px;background:#0a5c26;color:white;border:none;border-radius:8px}
+.search-bar button{padding:12px 20px;background:#0a5c26;color:white;border:none;border-radius:8px;cursor:pointer}
 .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px;background:#fffde7;font-size:12px}
 .badge{background:#ffeb3b;color:#0a5c26;padding:5px 10px;border-radius:20px;font-weight:bold;border:1px solid #0a5c26}
 .shops{display:flex;gap:10px;overflow-x:auto;padding:10px;background:white}
@@ -25,7 +25,8 @@ body{background:#f9f9f0}
 .cost{font-size:11px;color:#888;text-decoration:line-through}
 .markup{font-size:10px;background:#ffeb3b;padding:2px 5px;border-radius:5px}
 .footer{background:#0a5c26;color:white;text-align:center;padding:20px;margin-top:20px}
-.footer a{color:#ffeb3b}
+.footer a{color:#ffeb3b;text-decoration:none}
+.loading{text-align:center;padding:30px;font-size:18px;color:#0a5c26}
 </style>
 </head>
 <body>
@@ -47,33 +48,60 @@ body{background:#f9f9f0}
 </div>
 <div class="shops">
 <button class="shop-btn active" onclick="filterShop('all')">All Shops</button>
+<button class="shop-btn" onclick="filterShop('baraj-mart')">Baraj Mart - Gwanda</button>
 <button class="shop-btn" onclick="filterShop('sai-mart')">Sai Mart</button>
 <button class="shop-btn" onclick="filterShop('gwanda-fresh')">Gwanda Fresh</button>
-<button class="shop-btn" onclick="filterShop('bulawayo-shop')">Bulawayo Shop</button>
 </div>
+<div id="status" class="loading">Loading Baraj Mart Products...</div>
 <div class="products" id="productList"></div>
 <div class="footer">
 <p>Shop with Confidence - Trusted, Secure, Local</p>
-<p>Visit: https://muzavaziluckson5-oss.github.io/ZimGroceries/</p>
-<p><a href="admin/import.html">Admin - Import Database + 14.5%</a> | <a href="privacy.html">Privacy Policy</a></p>
-<p style="font-size:12px">14.5% Transparent - Supporting local vendors Gwanda & Zimbabwe - ZIMRA Compliant</p>
+<p style="font-size:12px;margin-top:5px">Gwanda - Bulawayo - Zimbabwe - Fast Delivery</p>
+<p style="margin-top:10px"><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms</a></p>
+<p style="font-size:11px;margin-top:10px;opacity:.8">14.5% Transparent - Supporting local vendors - ZIMRA Compliant - EcoCash / USD Accepted</p>
 </div>
 <script>
 const COMMISSION = 0.145;
-let allProducts = JSON.parse(localStorage.getItem('zg_products')) || [
-{name:"Tomatoes 1kg", cost:1.00, stock:100, shop:"sai-mart", category:"Vegetables"},
-{name:"Cooking Oil 2L", cost:3.50, stock:50, shop:"sai-mart", category:"Groceries"},
-{name:"Bread", cost:1.00, stock:80, shop:"gwanda-fresh", category:"Bakery"}
-];
+let allProducts = [];
+async function loadProducts(){
+  try{
+    const res = await fetch('products.json?v='+Date.now());
+    if(!res.ok) throw new Error('No products.json');
+    allProducts = await res.json();
+    document.getElementById('status').style.display='none';
+    const params = new URLSearchParams(window.location.search);
+    const shopParam = params.get('shop');
+    if(shopParam){
+      render(allProducts.filter(p=>p.shop===shopParam));
+    } else {
+      render(allProducts);
+    }
+  }catch(e){
+    allProducts = JSON.parse(localStorage.getItem('zg_products')) || [];
+    document.getElementById('status').innerText = 'Showing local products - Create products.json on GitHub to make public!';
+    render(allProducts);
+  }
+}
 function render(products){
-const list=document.getElementById('productList');list.innerHTML='';
-products.forEach(p=>{
-const sell=(p.cost*1.145).toFixed(2);const profit=(p.cost*0.145).toFixed(2);
-list.innerHTML+=`<div class="product"><div style="background:#e8f5e9;height:100px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:40px">🥬</div><h3>${p.name}</h3><span class="cost">Cost $${p.cost.toFixed(2)}</span><br><span class="price">$${sell}</span> <span class="markup">+14.5%</span><br><small>Stock:${p.stock}|${p.shop}</small><br><small style="color:green">Earn $${profit}</small><br><button style="margin-top:5px;width:100%;padding:8px;background:#0a5c26;color:white;border:none;border-radius:5px" onclick="alert('Order ${p.name} $${sell}')">Order Now</button></div>`;
-});}
-function searchProducts(){const q=document.getElementById('searchInput').value.toLowerCase();const f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q));render(f);}
-function filterShop(shop){document.querySelectorAll('.shop-btn').forEach(b=>b.classList.remove('active'));event.target.classList.add('active');if(shop==='all')render(allProducts);else render(allProducts.filter(p=>p.shop===shop));}
-render(allProducts);
+  const list=document.getElementById('productList');list.innerHTML='';
+  if(products.length===0){list.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:20px">No products yet - Admin needs to create products.json</p>';return;}
+  products.forEach(p=>{
+    const sell=(p.cost*1.145).toFixed(2);
+    list.innerHTML+=`<div class="product"><div style="background:#e8f5e9;height:100px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:40px">🥬</div><h3>${p.name}</h3><span class="cost">$${p.cost.toFixed(2)}</span><br><span class="price">$${sell}</span> <span class="markup">+14.5%</span><br><small style="font-size:10px">${p.shop} | Stock:${p.stock}</small><br><button style="margin-top:5px;width:100%;padding:8px;background:#0a5c26;color:white;border:none;border-radius:5px;cursor:pointer" onclick="alert('Order ${p.name} for $${sell} - Contact Baraj Mart!')">Order Now</button></div>`;
+  });
+}
+function searchProducts(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)||p.shop.toLowerCase().includes(q));
+  render(f);
+}
+function filterShop(shop){
+  document.querySelectorAll('.shop-btn').forEach(b=>b.classList.remove('active'));
+  if(event && event.target) event.target.classList.add('active');
+  if(shop==='all') render(allProducts);
+  else render(allProducts.filter(p=>p.shop===shop));
+}
+loadProducts();
 </script>
 </body>
 </html>
