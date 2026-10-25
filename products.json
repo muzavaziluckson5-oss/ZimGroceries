@@ -1,0 +1,9 @@
+[
+  {"name":"Tomatoes 1kg","cost":1,"stock":120,"shop":"baraj-mart","category":"Vegetables"},
+  {"name":"Onions 1kg","cost":1.2,"stock":80,"shop":"baraj-mart","category":"Vegetables"},
+  {"name":"Cooking Oil 2L","cost":3.5,"stock":50,"shop":"baraj-mart","category":"Groceries"},
+  {"name":"Mealie Meal 10kg","cost":8,"stock":30,"shop":"baraj-mart","category":"Groceries"},
+  {"name":"Sugar 2kg","cost":2.2,"stock":40,"shop":"baraj-mart","category":"Groceries"},
+  {"name":"Bread Loaf","cost":1,"stock":100,"shop":"baraj-mart","category":"Bakery"},
+  {"name":"Eggs Tray 30","cost":7,"stock":20,"shop":"baraj-mart","category":"Dairy"}
+]
