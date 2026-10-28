@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Easy Admin - Nsola Empire</title><style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:#111;color:#fff;padding:12px}
+h1{text-align:center;background:#0a7a00;padding:14px;border-radius:12px}
+.card{background:#222;border-radius:12px;padding:12px;margin:12px 0}
+input,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:none;font-size:15px}
+input{background:#333;color:#fff}
+button{background:#25D366;color:#fff;font-weight:bold}
+.small{font-size:12px;color:#aaa;text-align:center;margin:6px}
+.preview{width:100%;height:120px;object-fit:contain;background:#000;border-radius:8px;display:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.item{background:#fff;color:#000;border-radius:10px;padding:6px;text-align:center}
+.item img{width:100%;height:80px;object-fit:contain}
+.price{color:#e60000;font-weight:bold}
+.del{background:#ff4444;margin-top:4px;padding:6px;font-size:12px}
+</style></head><body>
+<h1>🛒 NSOLA EASY ADMIN</h1>
+<p class="small">Choose photo, name, price, ADD. Done!</p>
+<div class="card">
+<img id="prev" class="preview">
+<input type="file" id="file" accept="image/*">
+<input id="name" placeholder="Product name e.g. Kefalos Yoghurt 500g">
+<input id="price" placeholder="Price e.g. 2.50" type="number" step="0.01">
+<button onclick="add()">➕ ADD PRODUCT</button>
+<button onclick="publish()" style="background:#ffcc00;color:#000;margin-top:12px">📤 PUBLISH TO SHOP (1 click)</button>
+</div>
+<div class="grid" id="list"></div>
+<script>
+let products = JSON.parse(localStorage.getItem('nsola_products')||'[]');
+let currentImg='';
+document.getElementById('file').addEventListener('change', e=>{
+ let f=e.target.files[0];
+ let r=new FileReader();
+ r.onload=ev=>{currentImg=ev.target.result;let p=document.getElementById('prev');p.src=currentImg;p.style.display='block';};
+ r.readAsDataURL(f);
+});
+function render(){
+ let L=document.getElementById('list');
+ L.innerHTML='';
+ products.forEach((p,i)=>{
+  L.innerHTML+=`<div class="item"><img src="${p.img}"><div style="font-size:11px;height:30px">${p.name}</div><div class="price">$${p.price}</div><input value="${p.price}" onchange="edit(${i},this.value)" style="background:#eee;color:#000;padding:4px;width:60px;margin:2px"><button class="del" onclick="del(${i})">Delete</button></div>`;
+ });
+}
+function add(){
+ let n=document.getElementById('name').value;
+ let pr=document.getElementById('price').value;
+ if(!currentImg){alert('Choose photo first');return;}
+ if(!n||!pr){alert('Add name and price');return;}
+ products.push({name:n,price:pr,img:currentImg});
+ localStorage.setItem('nsola_products',JSON.stringify(products));
+ document.getElementById('name').value='';document.getElementById('price').value='';currentImg='';document.getElementById('prev').style.display='none';
+ render();
+}
+function edit(i,v){products[i].price=v;localStorage.setItem('nsola_products',JSON.stringify(products));render();}
+function del(i){if(confirm('Delete?')){products.splice(i,1);localStorage.setItem('nsola_products',JSON.stringify(products));render();}}
+function publish(){
+ if(products.length==0){alert('No products');return;}
+ let shop=`<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nsola Empire</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:#fff7e6;padding:10px}.header{background:#0a7a00;color:#fff;padding:18px;text-align:center;border-radius:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border-radius:14px;padding:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.15)}.card img{width:100%;height:155px;object-fit:contain;border-radius:10px;background:#fff}h3{font-size:11px;margin:6px 0;height:32px}.price{color:#e60000;font-weight:bold;font-size:18px}.btn{display:block;background:#25D366;color:#fff;padding:10px;border-radius:9px;text-decoration:none;font-weight:bold;margin-top:6px;font-size:13px}</style></head><body><div class="header"><h1>🛒 NSOLA EMPIRE</h1><p>Groceries • Dairy • Gwanda</p><p>📲 Order on WhatsApp</p></div><div class="grid">`;
+ products.forEach(p=>{
+  shop+=`<div class="card"><img src="${p.img}"><h3>${p.name}</h3><div class="price">$${p.price}</div><a class="btn" href="https://wa.me/263781022420?text=Hi Nsola, I want ${p.name} $${p.price}">Order WhatsApp</a></div>`;
+ });
+ shop+=`</div></body></html>`;
+ let blob=new Blob([shop],{type:'text/html'});
+ let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='nsola-empire.html';a.click();
+ alert('Downloaded! Now upload this ONE file to GitHub.');
+}
+render();
+</script></body></html>
