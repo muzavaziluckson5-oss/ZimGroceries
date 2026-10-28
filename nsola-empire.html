@@ -1,34 +1,89 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nsola Empire Supermarket</title><style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:#000;color:#fff;padding:10px}
-.header{background:#0a0a0a;border:2px solid #d4af37;border-radius:18px;padding:12px;text-align:center;margin-bottom:12px}
-.logo{width:100%;max-width:320px;border-radius:12px}
-.badge{background:linear-gradient(90deg,#d4af37,#ffd700);color:#000;padding:6px 14px;border-radius:20px;font-weight:bold;font-size:12px;display:inline-block;margin-top:8px}
-.contact{background:#25D366;color:#fff;padding:12px;border-radius:12px;text-align:center;margin-bottom:12px;font-weight:bold}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.c{background:#fff;color:#000;border-radius:14px;padding:8px;text-align:center;border:2px solid #d4af37}
-.c img{width:100%;height:150px;object-fit:contain;background:#fff;border-radius:10px}
-.pr{color:#0a7a00;font-weight:bold;font-size:20px}
-.b{display:block;background:#25D366;color:#fff;padding:11px;border-radius:10px;text-decoration:none;font-weight:bold;margin-top:6px}
-h3{font-size:11px;margin:6px 0;height:30px}
-.footer{background:#111;border-top:2px solid #d4af37;margin-top:14px;padding:14px;border-radius:12px;text-align:center;font-size:11px;color:#aaa}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:#000;color:#fff;padding:10px;padding-bottom:100px}
+.header{background:#0a0a0a;border:2px solid #d4af37;border-radius:18px;padding:12px;text-align:center}
+.logo{width:100%;max-width:300px;border-radius:12px}
+.cart-btn{position:fixed;top:12px;right:12px;background:#25D366;color:#fff;padding:10px 14px;border-radius:30px;font-weight:bold;z-index:999}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.c{background:#fff;color:#000;border-radius:14px;padding:8px;text-align:center;border:2px solid #d4af37;position:relative}
+.c img{width:100%;height:120px;object-fit:contain;background:#fff;border-radius:10px}
+.pr{color:#0a7a00;font-weight:bold;font-size:19px}
+.incl{font-size:9px;color:#666;background:#fff7e6;padding:2px 6px;border-radius:10px;display:inline-block}
+.add{background:#000;color:#d4af37;border:1px solid #d4af37;padding:9px;border-radius:10px;font-weight:bold;width:100%;margin-top:6px}
+.cart-panel{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:3px solid #d4af37;border-radius:20px 20px 0 0;padding:14px;max-height:90vh;overflow:auto;display:none;z-index:1000}
+.item-row{display:flex;justify-content:space-between;align-items:center;background:#222;padding:8px;border-radius:8px;margin:6px 0;font-size:13px}
+.qty button{background:#d4af37;color:#000;border:none;padding:4px 10px;border-radius:6px;font-weight:bold;margin:0 3px}
+.totals{background:#000;border:1px solid #d4af37;padding:10px;border-radius:10px;margin-top:10px;font-size:13px}
+.totals div{display:flex;justify-content:space-between;margin:5px 0}
+.grand{color:#ffd700;font-weight:bold;font-size:18px;border-top:1px solid #333;padding-top:8px}
+.check{background:#25D366;color:#fff;padding:14px;border:none;border-radius:12px;width:100%;font-weight:bold;font-size:16px;margin-top:10px}
+select,input{width:100%;padding:12px;margin-top:6px;border-radius:8px;border:none}
+.close{position:absolute;top:10px;right:14px;background:red;color:#fff;border:none;border-radius:50%;width:28px;height:28px}
+h3{font-size:11px;margin:4px 0;height:28px}
 </style></head><body>
+
+<div class="cart-btn" onclick="openCart()">🛒 Cart (<span id="cartCount">0</span>) $<span id="cartTot">0.00</span></div>
+
 <div class="header">
-<img class="logo" src="nsola-logo.jpg">
-<div class="badge">⭐ OFFICIAL - Quality Products • Better Living ⭐</div>
-<p style="margin-top:8px;color:#d4af37">📲 WhatsApp: 0781022420 | Gwanda</p>
+<img class="logo" src="nsola-logo.jpg" onerror="this.src='https://via.placeholder.com/300?text=NSOLA+EMPIRE'">
+<div style="background:linear-gradient(90deg,#d4af37,#ffd700);color:#000;padding:5px 12px;border-radius:20px;display:inline-block;margin-top:8px;font-weight:bold;font-size:11px">OFFICIAL • 14.5% Inclusive Pricing</div>
+<p style="margin-top:6px;color:#d4af37;font-size:12px">📲 Orders: 0781022420 | Gwanda</p>
 </div>
-<div class="contact">✅ Tap ORDER → Comes to 0781022420 for approval</div>
+
 <div class="grid">
-<div class="c"><img src="kefalos-small.jpg" onerror="this.src='https://via.placeholder.com/150?text=Kefalos'"><h3>Kefalos Smooth Yoghurt</h3><div class="pr">$0.85</div><a class="b" href="https://wa.me/263781022420?text=Hi Nsola Empire, Kefalos $0.85">Order 0781022420</a></div>
-<div class="c"><img src="kefalos-cheese.jpg" onerror="this.src='https://via.placeholder.com/150?text=Cheese'"><h3>Kefalos Cheese Slices 200g</h3><div class="pr">$4.30</div><a class="b" href="https://wa.me/263781022420?text=Cheese $4.30">Order</a></div>
-<div class="c"><img src="cortina-150ml.jpg" onerror="this.src='https://via.placeholder.com/150?text=Cortina'"><h3>Cortina Ice Cream 150ML</h3><div class="pr">$1.30</div><a class="b" href="https://wa.me/263781022420?text=Cortina $1.30">Order</a></div>
-<div class="c"><img src="trekker-coffee.jpg" onerror="this.src='https://via.placeholder.com/150?text=Trekker'"><h3>Trekker Mixture</h3><div class="pr">$3.20</div><a class="b" href="https://wa.me/263781022420?text=Trekker $3.20">Order</a></div>
-<div class="c"><img src="typek-a4.jpg" onerror="this.src='https://via.placeholder.com/150?text=Typek'"><h3>Typek A4 Paper</h3><div class="pr">$5.20</div><a class="b" href="https://wa.me/263781022420?text=Typek $5.20">Order</a></div>
-<div class="c"><img src="lifebuoy-175g.jpg" onerror="this.src='https://via.placeholder.com/150?text=Lifebuoy'"><h3>Lifebuoy Herbal 175g</h3><div class="pr">$1.75</div><a class="b" href="https://wa.me/263781022420?text=Lifebuoy $1.75">Order</a></div>
+<div class="c"><img src="kefalos-small.jpg" onerror="this.src='https://via.placeholder.com/150?text=Kefalos'"><h3>Kefalos Smooth</h3><div class="pr">$0.97</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Kefalos Smooth',0.97,0.85)">Add to Cart</button></div>
+<div class="c"><img src="kefalos-cheese.jpg" onerror="this.src='https://via.placeholder.com/150?text=Cheese'"><h3>Cheese Slices 200g</h3><div class="pr">$4.92</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Cheese Slices 200g',4.92,4.30)">Add to Cart</button></div>
+<div class="c"><img src="cortina-150ml.jpg" onerror="this.src='https://via.placeholder.com/150?text=Cortina'"><h3>Cortina 150ML</h3><div class="pr">$1.49</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Cortina 150ML',1.49,1.30)">Add to Cart</button></div>
+<div class="c"><img src="trekker-coffee.jpg" onerror="this.src='https://via.placeholder.com/150?text=Trekker'"><h3>Trekker Coffee</h3><div class="pr">$3.66</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Trekker Coffee',3.66,3.20)">Add to Cart</button></div>
+<div class="c"><img src="typek-a4.jpg" onerror="this.src='https://via.placeholder.com/150?text=Typek'"><h3>Typek A4 Paper</h3><div class="pr">$5.95</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Typek A4 Paper',5.95,5.20)">Add to Cart</button></div>
+<div class="c"><img src="lifebuoy-175g.jpg" onerror="this.src='https://via.placeholder.com/150?text=Lifebuoy'"><h3>Lifebuoy 175g</h3><div class="pr">$2.00</div><div class="incl">14.5% incl.</div><button class="add" onclick="addToCart('Lifebuoy 175g',2.00,1.75)">Add to Cart</button></div>
 </div>
-<div class="footer">
-<img src="nsola-logo.jpg" style="width:100px;border-radius:8px"><br>
-<b style="color:#d4af37">NSOLA EMPIRE SUPERMARKET</b><br>Quality Products • Better Living<br><br>
-📍 Gwanda | 📲 0781022420 | 🕒 08:00-19:00 Daily
+
+<div id="cartPanel" class="cart-panel">
+<button class="close" onclick="closeCart()">X</button>
+<h2 style="color:#d4af37">🛒 Your Cart</h2>
+<div id="cartItems"></div>
+
+<label style="color:#d4af37;margin-top:10px;display:block;font-size:12px">🚚 Delivery Option:</label>
+<select id="delivery" onchange="renderCart()">
+<option value="0">🏃 Pick Up - FREE</option>
+<option value="1">🛵 Gwanda Town Delivery - $1.00</option>
+<option value="2">🚐 Outskirts / Jahunda - $2.00</option>
+<option value="3">📦 Far Delivery - $3.50</option>
+</select>
+
+<div class="totals">
+<div><span>Items Subtotal:</span><span>$<span id="sub">0.00</span></span></div>
+<div><span>Delivery:</span><span>$<span id="del">0.00</span></span></div>
+<div class="grand"><span>TOTAL TO PAY:</span><span>$<span id="grand">0.00</span></span></div>
+<div style="color:#aaa;font-size:10px;margin-top:8px">✅ All prices already include 14.5% Nsola fee - No hidden charges!</div>
+<div style="color:#444;font-size:10px">Your profit breakdown shown only to you on WhatsApp</div>
 </div>
+
+<input id="custName" placeholder="Your Name">
+<input id="custLoc" placeholder="Your Location / Street">
+<input id="custPhone" placeholder="Your WhatsApp Number">
+<button class="check" onclick="checkout()">✅ APPROVE ORDER → 0781022420</button>
+</div>
+
+<script>
+let cart=JSON.parse(localStorage.getItem('nsola_cart')||'[]');
+function addToCart(name,priceIncl,base){let f=cart.find(i=>i.name===name);if(f){f.qty++}else{cart.push({name,priceIncl,base,qty:1})};save();alert(name+' added - $'+priceIncl)}
+function save(){localStorage.setItem('nsola_cart',JSON.stringify(cart));updateIcon()}
+function updateIcon(){let c=0,t=0;cart.forEach(i=>{c+=i.qty;t+=i.priceIncl*i.qty});document.getElementById('cartCount').innerText=c;document.getElementById('cartTot').innerText=t.toFixed(2);renderCart()}
+function renderCart(){let el=document.getElementById('cartItems');el.innerHTML='';let sub=0,baseTot=0;cart.forEach((it,idx)=>{sub+=it.priceIncl*it.qty;baseTot+=it.base*it.qty;el.innerHTML+=`<div class="item-row"><div><b>${it.name}</b><br>$${it.priceIncl} x ${it.qty}</div><div class="qty"><button onclick="chg(${idx},-1)">-</button>${it.qty}<button onclick="chg(${idx},1)">+</button> <button onclick="rem(${idx})" style="background:red;color:#fff">x</button></div></div>`});let del=parseFloat(document.getElementById('delivery').value||0);document.getElementById('sub').innerText=sub.toFixed(2);document.getElementById('del').innerText=del.toFixed(2);document.getElementById('grand').innerText=(sub+del).toFixed(2);window._sub=sub;window._base=baseTot;window._del=del}
+function chg(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);save()}
+function rem(i){cart.splice(i,1);save()}
+function openCart(){document.getElementById('cartPanel').style.display='block';renderCart()}
+function closeCart(){document.getElementById('cartPanel').style.display='none'}
+function checkout(){
+let name=document.getElementById('custName').value||'Customer';let loc=document.getElementById('custLoc').value||'Gwanda';let phone=document.getElementById('custPhone').value||'';
+if(cart.length==0){alert('Cart empty');return;}
+let del=window._del;let sub=window._sub;let base=window._base;let profit=sub-base;
+let msg=`*NEW ORDER - NSOLA EMPIRE*%0A%0AName: ${name}%0APhone: ${phone}%0ALocation: ${loc}%0A%0A*Items (14.5% incl):*%0A`;
+cart.forEach(it=>{msg+=`- ${it.name} x${it.qty} = $${(it.priceIncl*it.qty).toFixed(2)}%0A`});
+msg+=`%0ASubtotal: $${sub.toFixed(2)}%0ADelivery: $${del.toFixed(2)}%0A*TOTAL CUSTOMER PAYS: $${(sub+del).toFixed(2)}*%0A%0A*NSOLA BREAKDOWN (For Owner Only):*%0ABase Cost: $${base.toFixed(2)}%0AYour 14.5% Profit: $${profit.toFixed(2)}%0ADelivery: $${del.toFixed(2)}%0A%0APlease approve.`;
+window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');
+}
+updateIcon();
+</script>
 </body></html>
