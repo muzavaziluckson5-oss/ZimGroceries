@@ -1,71 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classic Shoes - Gwanda</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Arial;background:#f5f5f5;padding:12px}
-.header{background:#000;color:#fff;padding:20px;text-align:center;border-radius:12px;margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.card{background:#fff;border-radius:12px;padding:8px;text-align:center;box-shadow:0 2px 6px rgba(0,0,0,0.1)}
-.card img{width:100%;height:160px;object-fit:cover;border-radius:8px;background:#eee}
-.card h3{font-size:13px;margin:6px 0;height:32px;overflow:hidden}
-.price{color:#e60000;font-weight:bold;font-size:18px}
-.btn{display:block;background:#25D366;color:#fff;padding:9px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:6px;font-size:14px}
-.stock{font-size:10px;color:#888}
-</style>
-</head>
-<body>
-<div class="header">
-<h1>🔥 CLASSIC SHOES - GWANDA 🔥</h1>
-<p style="color:#ffcc00">Chris Collection - Original</p>
-<p>📍 Gwanda | 📲 0781022420</p>
-</div>
-<div id="products" class="grid"></div>
-<script>
-const MARKUP=1.17;
-const WHATSAPP="263781022420";
-// YOUR 9 SHOES WITH REAL PHOTO NAMES - EDIT NAMES TO MATCH YOUR UPLOADED FILES
-const shoes=[
- {name:"Nike Air Force 1 Triple White AF1",cost:25,stock:15,image:""},
- {name:"Nike Air Force 1 Brown Wheat Gum Supreme",cost:25,stock:12,image:""},
- {name:"Adidas Postmove SE White Black",cost:25,stock:12,image:""},
- {name:"Jordan 1 Mid Black Bordeaux White",cost:30,stock:10,image:""},
- {name:"New Balance 740 Silver Neon Green",cost:30,stock:10,image:""},
- {name:"Nike TC 7900 White Pink Platform Womens",cost:40,stock:8,image:""},
- {name:"Nike Air Max 270 Black Pink Purple Gradient",cost:40,stock:8,image:""},
- {name:"Nike Air Max Plus TN Triple White",cost:45,stock:10,image:""},
- {name:"Timberland 6-Inch Premium Boot Wheat",cost:85,stock:5,image:""}
-];
-// TRY TO LOAD IMAGES FROM GITHUB - IF YOU UPLOAD FILES WITH THESE NAMES IT WILL SHOW
-function getImage(p){
-// Map to your uploaded files - use first 5 you sent
-if(p.name.includes("Triple White AF1")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/af1-white.jpg";
-if(p.name.includes("Brown Wheat")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/af1-brown.jpg";
-if(p.name.includes("Adidas")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/adidas-white.jpg";
-if(p.name.includes("Bordeaux")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/jordan-bordeaux.jpg";
-if(p.name.includes("New Balance")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/nb-silver.jpg";
-if(p.name.includes("TC 7900")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/nike-tc7900.jpg";
-if(p.name.includes("Black Pink")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/nike-blackpink.jpg";
-if(p.name.includes("TN Triple")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/nike-tn.jpg";
-if(p.name.includes("Timberland")) return "https://muzavaziluckson5-oss.github.io/ZimGroceries/timberland.jpg";
-return `https://via.placeholder.com/300?text=${encodeURIComponent(p.name)}`;
-}
-let html='';
-shoes.forEach(p=>{
- const sell=(p.cost*1.17).toFixed(2);
- const msg=encodeURIComponent(`Hi, I want ${p.name} - $${sell} Size?`);
- html+=`<div class="card">
-  <img src="${getImage(p)}" onerror="this.src='https://via.placeholder.com/300?text=SHOE'">
-  <h3>${p.name}</h3>
-  <div class="price">$${sell}</div>
-  <div class="stock">Stock ${p.stock}</div>
-  <a class="btn" href="https://wa.me/${WHATSAPP}?text=${msg}" target="_blank">Order WhatsApp</a>
- </div>`;
-});
-document.getElementById('products').innerHTML=html;
-</script>
-</body>
-</html>
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Classic Shoes Gwanda</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial;background:#f1f1f1;padding:10px}.header{background:#000;color:#fff;padding:18px;text-align:center;border-radius:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#fff;border-radius:14px;padding:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.12)}.card img{width:100%;height:150px;object-fit:cover;border-radius:10px;background:#eee}h3{font-size:12px;margin:6px 0;height:28px}.price{color:#e60000;font-weight:bold;font-size:17px}.btn{display:block;background:#25D366;color:#fff;padding:9px;border-radius:8px;text-decoration:none;font-weight:bold;margin-top:6px;font-size:13px}</style></head><body><div class="header"><h1>🔥 CLASSIC SHOES - GWANDA 🔥</h1><p style="color:#ffcc00">Chris Original</p><p>📍 Gwanda | 📲 0781022420</p></div><div class="grid">
+<div class="card"><img src="af1-white.jpg"><h3>Nike AF1 Triple White</h3><div class="price">$23.00</div><a class="btn" href="https://wa.me/263781022420?text=AF1 White $23.00">Order WhatsApp</a></div>
+<div class="card"><img src="af1-brown.jpg"><h3>Nike AF1 Brown Wheat</h3><div class="price">$23.00</div><a class="btn" href="https://wa.me/263781022420?text=AF1 Brown $23.00">Order WhatsApp</a></div>
+<div class="card"><img src="adidas.jpg"><h3>Adidas Postmove</h3><div class="price">$25.00</div><a class="btn" href="https://wa.me/263781022420?text=Adidas $25.00">Order WhatsApp</a></div>
+<div class="card"><img src="jordan.jpg"><h3>Jordan 1 Bordeaux</h3><div class="price">$35</div><a class="btn" href="https://wa.me/263781022420?text=Jordan $35">Order WhatsApp</a></div>
+<div class="card"><img src="nb.jpg"><h3>New Balance 740</h3><div class="price">$35</div><a class="btn" href="https://wa.me/263781022420?text=NB $35">Order WhatsApp</a></div>
+<div class="card"><img src="tc7900.jpg"><h3>Nike TC 7900 Pink</h3><div class="price">$40</div><a class="btn" href="https://wa.me/263781022420?text=TC7900 $40">Order WhatsApp</a></div>
+<div class="card"><img src="airmax-pink.jpg"><h3>Air Max Black Pink</h3><div class="price">$45</div><a class="btn" href="https://wa.me/263781022420?text=AirMax $45">Order WhatsApp</a></div>
+<div class="card"><img src="tn.jpg"><h3>Nike TN Triple White</h3><div class="price">$55</div><a class="btn" href="https://wa.me/263781022420?text=TN $55">Order WhatsApp</a></div>
+<div class="card"><img src="timberland.jpg"><h3>Timberland Wheat</h3><div class="price">$80</div><a class="btn" href="https://wa.me/263781022420?text=Timberland $80">Order WhatsApp</a></div>
+<div class="card"><img src="nsola1.jpg"><h3>Nsola Empire Product 1</h3><div class="price">$0.00</div><a class="btn" href="https://wa.me/263781022420?text=Nsola1 $0.00">Order WhatsApp</a></div>
+</div></body></html>
