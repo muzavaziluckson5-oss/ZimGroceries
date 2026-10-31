@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZIM GROCERIES - Shop From Home</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16a34a">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f5f5f5}
+.header{background:#16a34a;color:white;padding:18px;text-align:center;position:sticky;top:0;z-index:10}
+.header h1{font-size:22px}
+.header p{font-size:12px;opacity:0.9}
+.supermarkets{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.shop-card{background:white;padding:15px;border-radius:15px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.1);cursor:pointer;border:2px solid transparent}
+.shop-card.active{border-color:#16a34a;background:#f0fdf4}
+.shop-card .icon{font-size:32px}
+.shop-card b{font-size:13px;display:block;margin-top:5px}
+#search{width:92%;margin:10px 4%;padding:14px;border-radius:25px;border:1px solid #ddd;font-size:15px}
+#count{text-align:center;color:#16a34a;font-weight:bold;padding:5px}
+.product{background:white;margin:8px 10px;padding:12px;border-radius:12px;display:flex;justify-content:space-between;align-items:center}
+.price{color:#16a34a;font-weight:bold;font-size:17px}
+.btn{background:#16a34a;color:white;border:none;padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer}
+.btn-whatsapp{background:#25D366}
+.cart-bar{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px 15px;box-shadow:0 -2px 10px rgba(0,0,0,0.15);display:flex;justify-content:space-between;align-items:center;z-index:20}
+.admin{display:none;padding:15px;background:#111;color:#0f0;margin:10px;border-radius:10px}
+.payment{padding:10px;display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.payment button{padding:8px 12px;border-radius:20px;border:1px solid #16a34a;background:white;font-size:12px;font-weight:bold}
+.payment button.active{background:#16a34a;color:white}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>ZIM GROCERIES 🇿🇼</h1>
+<p>Choose Supermarket • Shop From Home • Pay EcoCash InnBucks OmaRi</p>
+</div>
+
+<div class="supermarkets">
+<div class="shop-card active" onclick="selectShop('nsola',this)"><div class="icon">🛒</div><b>Nsola Empire</b><small>73 Products</small></div>
+<div class="shop-card" onclick="selectShop('tm',this)"><div class="icon">🏪</div><b>TM Pick n Pay</b><small>Coming Soon</small></div>
+<div class="shop-card" onclick="selectShop('ok',this)"><div class="icon">🛍️</div><b>OK Zimbabwe</b><small>Coming Soon</small></div>
+<div class="shop-card" onclick="selectShop('spar',this)"><div class="icon">🥦</div><b>Spar</b><small>Coming Soon</small></div>
+</div>
+
+<input id="search" placeholder="Search in Nsola Empire..." onkeyup="searchProd()">
+
+<div class="payment">
+<button onclick="setPay('EcoCash',this)" class="active">EcoCash</button>
+<button onclick="setPay('InnBucks',this)">InnBucks</button>
+<button onclick="setPay('OmaRi',this)">OmaRi</button>
+<button onclick="setPay('OneMoney',this)">OneMoney</button>
+<button onclick="setPay('RTGS',this)">RTGS Transfer</button>
+</div>
+
+<div id="count">Loading Nsola Empire...</div>
+<div id="products"></div>
+
+<div class="admin" id="adminPanel">
+<h3>🔐 OWNER ADMIN - Hidden Commission 14.5%</h3>
+<div id="adminStats"></div>
+<p style="margin-top:10px"><small>Customer never sees this. Only you.</small></p>
+</div>
+
+<div style="height:80px"></div>
+<div class="cart-bar">
+<div><b id="cartCount">0 items</b> • $<span id="cartTotal">0.00</span><br><small id="payMethod">Pay: EcoCash</small></div>
+<button class="btn btn-whatsapp" onclick="checkout()">Confirm on WhatsApp 0781022420</button>
+</div>
+
+<script>
+let allProducts=[], cart=[], currentShop='nsola', payMethod='EcoCash', vendorOwe=0;
+const COMMISSION=0.145;
+const WHATSAPP='263781022420';
+
+async function loadProducts(){
+ try{
+  let text=await fetch('luckson27.txt').then(r=>r.text());
+  let parsed=Papa.parse(text,{header:true,skipEmptyLines:true});
+  allProducts=parsed.data.filter(r=>Object.values(r).join('').trim()!='').map(r=>{
+   let v=Object.values(r);
+   let name=r['product']||r['Product']||r['Product Name']||r['Item']||v[0]||'Product';
+   if(name.toLowerCase().includes('nsola')) name=v[1]||v[0];
+   let price=parseFloat((r['selling price']||r['Selling Price']||r['price']||r['Price']||v[1]||'0').toString().replace(/[^0-9.]/g,''))||0;
+   let stock=r['quantity in stock']||r['Quantity']||r['stock']||v[2]||'In Stock';
+   return {product:name.trim(), price:price, stock:stock};
+  }).filter(p=>p.product.length>2);
+  document.getElementById('count').innerText=allProducts.length+' Products in Nsola Empire ✅';
+  display(allProducts);
+ }catch(e){document.getElementById('count').innerText='Error loading luckson27.txt - check file';}
+}
+
+function display(list){
+ document.getElementById('products').innerHTML=list.slice(0,200).map((p,i)=>`
+  <div class="product"><div><b>${p.product}</b><br><small>Stock: ${p.stock}</small></div>
+  <div style="text-align:right"><div class="price">$${p.price.toFixed(2)}</div><button class="btn" onclick="addToCart(${allProducts.indexOf(p)})">Add</button></div></div>
+ `).join('');
+}
+
+function addToCart(index){
+ let prod=allProducts[index];
+ let existing=cart.find(c=>c.product===prod.product);
+ if(existing) existing.qty++;
+ else cart.push({...prod, qty:1});
+ updateCart();
+}
+
+function updateCart(){
+ let total=cart.reduce((s,p)=>s+p.price*p.qty,0);
+ vendorOwe=total*COMMISSION;
+ document.getElementById('cartCount').innerText=cart.length+' items ('+cart.reduce((s,p)=>s+p.qty,0)+' qty)';
+ document.getElementById('cartTotal').innerText=total.toFixed(2);
+ // Admin stats - hidden
+ document.getElementById('adminStats').innerHTML=`Total Sales: $${total.toFixed(2)}<br>Your 14.5% Commission: $${vendorOwe.toFixed(2)}<br>Vendor Gets: $${(total-vendorOwe).toFixed(2)}<br><br>Cart:<br>${cart.map(c=>`${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('<br>')}`;
+}
+
+function selectShop(name,el){
+ document.querySelectorAll('.shop-card').forEach(c=>c.classList.remove('active'));
+ el.classList.add('active');
+ currentShop=name;
+ if(name!=='nsola'){
+  document.getElementById('products').innerHTML='<div style="text-align:center;padding:40px;background:white;margin:10px;border-radius:15px"><h3>'+el.querySelector('b').innerText+' Coming Soon!</h3><p>Vendor onboarding in progress. Contact 0781022420 to list your supermarket.</p></div>';
+  document.getElementById('count').innerText='0 Products - Contact 0781022420 to join ZIM GROCERIES';
+ }else{
+  document.getElementById('search').placeholder='Search in Nsola Empire...';
+  display(allProducts);
+  document.getElementById('count').innerText=allProducts.length+' Products in Nsola Empire ✅';
+ }
+}
+
+function setPay(method,el){
+ payMethod=method;
+ document.querySelectorAll('.payment button').forEach(b=>b.classList.remove('active'));
+ el.classList.add('active');
+ document.getElementById('payMethod').innerText='Pay: '+method;
+}
+
+function searchProd(){
+ let q=document.getElementById('search').value.toLowerCase();
+ display(allProducts.filter(p=>p.product.toLowerCase().includes(q)));
+}
+
+function checkout(){
+ if(cart.length==0){alert('Cart empty - add products first!');return;}
+ let total=cart.reduce((s,p)=>s+p.price*p.qty,0);
+ let orderText=`*ZIM GROCERIES ORDER*%0A%0ASupermarket: Nsola Empire%0A%0A${cart.map(c=>`• ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*Total: $${total.toFixed(2)}*%0APayment: ${payMethod}%0A%0APlease confirm EcoCash/InnBucks details.`;
+ window.open(`https://wa.me/${WHATSAPP}?text=${orderText}`,'_blank');
+}
+
+// Secret admin access: add ?admin=zim2024 to URL or press title 5 times
+let press=0;
+document.querySelector('.header').addEventListener('click',()=>{press++; if(press>=5) document.getElementById('adminPanel').style.display='block';});
+if(window.location.search.includes('admin=zim2024')) document.getElementById('adminPanel').style.display='block';
+
+loadProducts();
+</script>
+</body>
+</html>
