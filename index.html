@@ -1,107 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZimGroceries - Yese MuZim - Fast & Safe Link</title>
+<title>ZimGroceries Gwanda Mall</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#16a34a">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f9f9f0}
-.header{background:#0a5c26;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:100}
-.header h1{font-size:28px}
-.header p{font-size:14px;color:#ffeb3b}
-.search-bar{padding:15px;background:white;display:flex;gap:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
-.search-bar input{flex:1;padding:12px;border:2px solid #0a5c26;border-radius:8px;font-size:16px}
-.search-bar button{padding:12px 20px;background:#0a5c26;color:white;border:none;border-radius:8px;cursor:pointer}
-.badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px;background:#fffde7;font-size:12px}
-.badge{background:#ffeb3b;color:#0a5c26;padding:5px 10px;border-radius:20px;font-weight:bold;border:1px solid #0a5c26}
-.shops{display:flex;gap:10px;overflow-x:auto;padding:10px;background:white}
-.shop-btn{white-space:nowrap;padding:8px 15px;border:2px solid #0a5c26;border-radius:20px;background:white;cursor:pointer}
-.shop-btn.active{background:#0a5c26;color:white}
-.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:15px;padding:15px}
-.product{background:white;border-radius:12px;padding:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center}
-.product h3{font-size:14px;margin:8px 0;height:35px;overflow:hidden}
-.price{color:#0a5c26;font-weight:bold;font-size:16px}
-.cost{font-size:11px;color:#888;text-decoration:line-through}
-.markup{font-size:10px;background:#ffeb3b;padding:2px 5px;border-radius:5px}
-.footer{background:#0a5c26;color:white;text-align:center;padding:20px;margin-top:20px}
-.footer a{color:#ffeb3b;text-decoration:none}
-.loading{text-align:center;padding:30px;font-size:18px;color:#0a5c26}
+.shop-filter button{padding:10px 18px;margin:4px;border-radius:20px;border:1px solid #16a34a;background:white;cursor:pointer;font-weight:bold}
+.shop-filter button.active{background:#16a34a;color:white}
+#search{width:90%;padding:12px;margin:10px;border-radius:10px;border:1px solid #ccc}
+.product{border:1px solid #eee;padding:10px;margin:8px;border-radius:10px}
 </style>
 </head>
 <body>
-<div class="header">
-<h1>ZimGroceries 🛒</h1>
-<p>Yese MuZim - Fast & Safe Link - Gwanda - Anywhere We Can Reach!</p>
-<p style="font-size:11px">A Link Where You Get Your Goods Fast And Safe - 14.5% Transparent</p>
+<h2 style="text-align:center">ZimGroceries - Gwanda Mall 🇿🇼</h2>
+<p style="text-align:center">Stand 2856 Phakama Business Centre, Jahunda</p>
+
+<div class="shop-filter" style="text-align:center">
+<button onclick="filterShop('all')" class="active" id="btn-all">All</button>
+<button onclick="filterShop('baraj')" id="btn-baraj">Baraj Mart</button>
+<button onclick="filterShop('classic')" id="btn-classic">Classic Shoes</button>
+<button onclick="filterShop('nsola')" id="btn-nsola">Nsola 1335</button>
+<button onclick="filterShop('sai')" id="btn-sai">SAI Mart</button>
 </div>
-<div class="badges">
-<span class="badge">✅ ZIMRA Compliant</span>
-<span class="badge">🔒 Cyber Secure</span>
-<span class="badge">🔐 Data Protection</span>
-<span class="badge">14.5% Transparent</span>
-<span class="badge">EcoCash Safe</span>
-</div>
-<div class="search-bar">
-<input id="searchInput" placeholder="Search everything you need... e.g., Tomatoes, Oil, Bread..." onkeyup="searchProducts()">
-<button onclick="searchProducts()">🔍 Search</button>
-</div>
-<div class="shops">
-<button class="shop-btn active" onclick="filterShop('all')">All Shops</button>
-<button class="shop-btn" onclick="filterShop('baraj-mart')">Baraj Mart - Gwanda</button>
-<button class="shop-btn" onclick="filterShop('sai-mart')">Sai Mart</button>
-<button class="shop-btn" onclick="filterShop('gwanda-fresh')">Gwanda Fresh</button>
-</div>
-<div id="status" class="loading">Loading Baraj Mart Products...</div>
-<div class="products" id="productList"></div>
-<div class="footer">
-<p>Shop with Confidence - Trusted, Secure, Local</p>
-<p style="font-size:12px;margin-top:5px">Gwanda - Bulawayo - Zimbabwe - Fast Delivery</p>
-<p style="margin-top:10px"><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms</a></p>
-<p style="font-size:11px;margin-top:10px;opacity:.8">14.5% Transparent - Supporting local vendors - ZIMRA Compliant - EcoCash / USD Accepted</p>
-</div>
+
+<div style="text-align:center"><input type="text" id="search" placeholder="Search... e.g. 10kg Mealie Meal" onkeyup="searchProducts()"></div>
+<div id="count" style="text-align:center;font-weight:bold"></div>
+<div id="products">Loading products...</div>
+
 <script>
-const COMMISSION = 0.145;
 let allProducts = [];
-async function loadProducts(){
-  try{
-    const res = await fetch('products.json?v='+Date.now());
-    if(!res.ok) throw new Error('No products.json');
-    allProducts = await res.json();
-    document.getElementById('status').style.display='none';
-    const params = new URLSearchParams(window.location.search);
-    const shopParam = params.get('shop');
-    if(shopParam){
-      render(allProducts.filter(p=>p.shop===shopParam));
-    } else {
-      render(allProducts);
-    }
-  }catch(e){
-    allProducts = JSON.parse(localStorage.getItem('zg_products')) || [];
-    document.getElementById('status').innerText = 'Showing local products - Create products.json on GitHub to make public!';
-    render(allProducts);
-  }
-}
-function render(products){
-  const list=document.getElementById('productList');list.innerHTML='';
-  if(products.length===0){list.innerHTML='<p style="grid-column:1/-1;text-align:center;padding:20px">No products yet - Admin needs to create products.json</p>';return;}
-  products.forEach(p=>{
-    const sell=(p.cost*1.145).toFixed(2);
-    list.innerHTML+=`<div class="product"><div style="background:#e8f5e9;height:100px;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:40px">🥬</div><h3>${p.name}</h3><span class="cost">$${p.cost.toFixed(2)}</span><br><span class="price">$${sell}</span> <span class="markup">+14.5%</span><br><small style="font-size:10px">${p.shop} | Stock:${p.stock}</small><br><button style="margin-top:5px;width:100%;padding:8px;background:#0a5c26;color:white;border:none;border-radius:5px;cursor:pointer" onclick="alert('Order ${p.name} for $${sell} - Contact Baraj Mart!')">Order Now</button></div>`;
+
+function loadCSV(file, shopName){
+ return new Promise((resolve)=>{
+  Papa.parse(file, {
+   download:true, header:true, skipEmptyLines:true,
+   complete: (res)=>{
+    let data = res.data.map(p=>{
+     p.shop = p.shop || shopName;
+     return p;
+    });
+    resolve(data);
+   },
+   error: ()=> resolve([])
   });
+ });
 }
+
+async function loadAll(){
+ let main = await loadCSV('products.csv', 'baraj');
+ let nsola = await loadCSV('luckson 27.csv', 'nsola');
+ // Try second name if first fails
+ if(nsola.length===0) nsola = await loadCSV('luckson27.csv', 'nsola');
+ if(nsola.length===0) nsola = await loadCSV('luckson27.csv'.replace('csv','CSV'), 'nsola');
+ let sai = await loadCSV('sai-mart.csv', 'sai');
+ 
+ allProducts = [...main, ...nsola, ...sai];
+ document.getElementById('count').innerText = `Total: ${allProducts.length} products`;
+ display(allProducts);
+}
+
+function display(list){
+ document.getElementById('products').innerHTML = list.slice(0,500).map(p=>`
+  <div class="product" data-shop="${(p.shop||'').toLowerCase()}">
+   <b>${p.name || p.Name || p.product}</b><br>
+   $${p.price || p.Price} - <small>${p.shop}</small><br>
+   <a href="https://wa.me/263XXXXXXXXX?text=Order: ${encodeURIComponent(p.name||p.Name)} from ${p.shop} - Stand 2856 Phakama Gwanda" style="color:green">Order on WhatsApp</a>
+  </div>
+ `).join('') + (list.length>500?`<p>Showing 500 of ${list.length} - use search</p>`:'');
+}
+
+function filterShop(s){
+ document.querySelectorAll('.shop-filter button').forEach(b=>b.classList.remove('active'));
+ document.getElementById('btn-'+s).classList.add('active');
+ if(s==='all') display(allProducts);
+ else display(allProducts.filter(p=> (p.shop||'').toLowerCase().includes(s)));
+}
+
 function searchProducts(){
-  const q=document.getElementById('searchInput').value.toLowerCase();
-  const f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.category.toLowerCase().includes(q)||p.shop.toLowerCase().includes(q));
-  render(f);
+ let q = document.getElementById('search').value.toLowerCase();
+ display(allProducts.filter(p=> JSON.stringify(p).toLowerCase().includes(q)));
 }
-function filterShop(shop){
-  document.querySelectorAll('.shop-btn').forEach(b=>b.classList.remove('active'));
-  if(event && event.target) event.target.classList.add('active');
-  if(shop==='all') render(allProducts);
-  else render(allProducts.filter(p=>p.shop===shop));
-}
-loadProducts();
+
+if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+loadAll();
 </script>
 </body>
 </html>
