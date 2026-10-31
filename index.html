@@ -1,120 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ZimGroceries - Online Marketplace Zimbabwe</title>
+<title>ZimGroceries - Online Marketplace</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16a34a">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
-body{font-family:Arial;margin:0;padding:10px;background:#f8f8f8}
+body{font-family:Arial;margin:0;padding:10px;background:#f5f5f5}
 .header{text-align:center;background:#16a34a;color:white;padding:20px;border-radius:0 0 20px 20px}
-.shop-filter{text-align:center;margin:15px 0}
 .shop-filter button{padding:10px 18px;margin:4px;border-radius:20px;border:1px solid #16a34a;background:white;cursor:pointer;font-weight:bold}
 .shop-filter button.active{background:#16a34a;color:white}
-#search{width:95%;padding:14px;margin:10px 0;border-radius:12px;border:1px solid #ccc;font-size:16px}
-.product{background:white;padding:15px;margin:8px 0;border-radius:12px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
-.order-btn{display:inline-block;margin-top:8px;padding:8px 15px;background:#25D366;color:white;border-radius:8px;text-decoration:none;font-weight:bold}
+#search{width:95%;padding:14px;border-radius:12px;border:1px solid #ccc}
+.product{background:white;padding:15px;margin:8px 0;border-radius:12px}
+.order-btn{background:#25D366;color:white;padding:8px 15px;border-radius:8px;text-decoration:none;display:inline-block;margin-top:8px;font-weight:bold}
 </style>
 </head>
 <body>
-
-<div class="header">
-<h2 style="margin:0">ZimGroceries 🇿🇼</h2>
-<p style="margin:5px 0">Zimbabwe's Online Marketplace - Delivering Everywhere</p>
+<div class="header"><h2>ZimGroceries 🇿🇼</h2><p>Online Marketplace Zimbabwe</p></div>
+<div style="text-align:center" class="shop-filter">
+<button onclick="filterShop('all')" class="active" id="btn-all">All</button>
+<button onclick="filterShop('baraj')" id="btn-baraj">Baraj</button>
+<button onclick="filterShop('classic')" id="btn-classic">Classic</button>
+<button onclick="filterShop('nsola')" id="btn-nsola">Nsola</button>
+<button onclick="filterShop('sai')" id="btn-sai">SAI</button>
 </div>
-
-<div class="shop-filter">
-<button onclick="filterShop('all')" class="active" id="btn-all">All Shops</button>
-<button onclick="filterShop('baraj')" id="btn-baraj">Baraj Mart</button>
-<button onclick="filterShop('classic')" id="btn-classic">Classic Shoes</button>
-<button onclick="filterShop('nsola')" id="btn-nsola">Nsola Empire</button>
-<button onclick="filterShop('sai')" id="btn-sai">SAI Mart</button>
-</div>
-
-<div style="text-align:center"><input id="search" placeholder="Search products... e.g. Rice, Shoes, Groceries" onkeyup="searchProducts()"></div>
-<div id="count" style="text-align:center;font-weight:bold;margin:10px;color:#16a34a"></div>
-<div id="products">Loading your empire...</div>
-
+<div style="text-align:center"><input id="search" placeholder="Search..." onkeyup="searchProducts()"><div id="count" style="font-weight:bold;margin:10px;color:#16a34a"></div></div>
+<div id="products">Loading luckson27.txt...</div>
 <script>
 let allProducts=[];
-
-function loadCSV(file, shopName){
+function loadCSV(file, shop){
  return new Promise(res=>{
-  Papa.parse(file,{
-   download:true,header:true,skipEmptyLines:true,
+  Papa.parse(file,{download:true,header:true,skipEmptyLines:true,
    complete:r=>{
-    let clean = r.data.filter(p=>p.product || p.Product).map(p=>{
-     // FIX UNDEFINED - FORCE SHOP NAME
-     p.shop = shopName; 
-     p.product = p.product || p.Product || p.name || '';
-     p.sell = p['selling price'] || p['Selling Price'] || p.price || '';
-     p.qty = p['quantity in stock'] || p['Quantity in Stock'] || p.qty || 0;
-     return p;
-    });
-    res(clean);
-   },
-   error:()=>res([])
-  });
+    let clean=r.data.filter(p=>p.product||p.Product).map(p=>{
+     p.shop=shop;p.product=p.product||p.Product||'';p.sell=p['selling price']||p['Selling Price']||p.price||'';p.qty=p['quantity in stock']||p['Quantity in Stock']||0;return p;
+    });res(clean);
+   },error:()=>res([])});
  });
 }
-
 async function loadAll(){
- let main = await loadCSV('products.csv','Baraj Mart');
- let nsola = await loadCSV('luckson 27.csv','Nsola Empire');
- if(nsola.length==0) nsola = await loadCSV('luckson27.csv','Nsola Empire');
- let sai = await loadCSV('sai-mart.csv','SAI Mart');
- if(sai.length==0) sai = await loadCSV('sai.csv','SAI Mart');
- 
- // If main has classic shoes, split them
- let baraj = [];
- let classic = [];
- main.forEach(p=>{
-  if(JSON.stringify(p).toLowerCase().includes('shoe') || p.product.toLowerCase().includes('shoe')){
-   p.shop='Classic Shoes'; classic.push(p);
-  } else {
-   p.shop='Baraj Mart'; baraj.push(p);
-  }
- });
-
- allProducts=[...baraj,...classic,...nsola,...sai];
- document.getElementById('count').innerText=`${allProducts.length} Products Available Online`;
+ let nsola27=await loadCSV('luckson27.txt','Nsola Empire');
+ let nsola21=await loadCSV('luckson21.txt','Nsola Empire');
+ let main=await loadCSV('products.csv','Baraj Mart');
+ let sai=await loadCSV('sai-mart.csv','SAI Mart');
+ allProducts=[...main,...nsola27,...nsola21,...sai];
+ document.getElementById('count').innerText=allProducts.length+' Products Available';
  display(allProducts);
 }
-
 function display(list){
- if(list.length==0){
-  document.getElementById('products').innerHTML='<p style="text-align:center">No products found. Try search.</p>';
-  return;
- }
- document.getElementById('products').innerHTML=list.slice(0,500).map(p=>{
-  let qty = parseInt(p.qty)||0;
-  let stockText = qty>0 ? `In Stock: ${qty}` : 'Out of Stock';
-  let stockColor = qty>0 ? 'green' : 'red';
-  return `
-  <div class="product">
-   <b style="font-size:16px">${p.product}</b><br>
-   <span style="color:#16a34a;font-size:20px;font-weight:bold">$${p.sell}</span><br>
-   <small style="color:${stockColor}">${stockText}</small> | <small style="background:#eef;padding:3px 8px;border-radius:10px">${p.shop}</small><br>
-   <a class="order-btn" href="https://wa.me/263XXXXXXXXX?text=Hello ZimGroceries, I want to order: ${encodeURIComponent(p.product)} - $${p.sell} from ${p.shop}">Order on WhatsApp</a>
-  </div>`;
- }).join('') + (list.length>500?`<p style="text-align:center">Showing 500 of ${list.length} - use search to find more</p>`:'');
+ document.getElementById('products').innerHTML=list.slice(0,500).map(p=>`
+  <div class="product"><b>${p.product}</b><br><span style="color:#16a34a;font-size:20px;font-weight:bold">$${p.sell}</span><br><small>Stock: ${p.qty}</small> | <small>${p.shop}</small><br><a class="order-btn" href="https://wa.me/263XXXXXXXXX?text=Order ${encodeURIComponent(p.product)}">Order WhatsApp</a></div>`).join('');
 }
-
 function filterShop(s){
- document.querySelectorAll('.shop-filter button').forEach(b=>b.classList.remove('active'));
- document.getElementById('btn-'+s).classList.add('active');
- if(s=='all') display(allProducts);
- else display(allProducts.filter(p=>p.shop.toLowerCase().includes(s)));
+ document.querySelectorAll('.shop-filter button').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+s).classList.add('active');
+ if(s=='all')display(allProducts);else display(allProducts.filter(p=>p.shop.toLowerCase().includes(s)));
 }
-
 function searchProducts(){
- let q=document.getElementById('search').value.toLowerCase();
- if(!q) display(allProducts);
- else display(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(q)));
+ let q=document.getElementById('search').value.toLowerCase();if(!q)display(allProducts);else display(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(q)));
 }
-
-if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');
 loadAll();
 </script>
 </body>
