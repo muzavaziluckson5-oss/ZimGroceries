@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>ZimGroceries - Online Marketplace</title>
+<title>ZimGroceries - Online Marketplace Zimbabwe</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16a34a">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,58 +9,51 @@
 <style>
 body{font-family:Arial;margin:0;padding:10px;background:#f5f5f5}
 .header{text-align:center;background:#16a34a;color:white;padding:20px;border-radius:0 0 20px 20px}
-.shop-filter button{padding:10px 18px;margin:4px;border-radius:20px;border:1px solid #16a34a;background:white;cursor:pointer;font-weight:bold}
-.shop-filter button.active{background:#16a34a;color:white}
-#search{width:95%;padding:14px;border-radius:12px;border:1px solid #ccc}
 .product{background:white;padding:15px;margin:8px 0;border-radius:12px}
-.order-btn{background:#25D366;color:white;padding:8px 15px;border-radius:8px;text-decoration:none;display:inline-block;margin-top:8px;font-weight:bold}
 </style>
 </head>
 <body>
-<div class="header"><h2>ZimGroceries 🇿🇼</h2><p>Online Marketplace Zimbabwe</p></div>
-<div style="text-align:center" class="shop-filter">
-<button onclick="filterShop('all')" class="active" id="btn-all">All</button>
-<button onclick="filterShop('baraj')" id="btn-baraj">Baraj</button>
-<button onclick="filterShop('classic')" id="btn-classic">Classic</button>
-<button onclick="filterShop('nsola')" id="btn-nsola">Nsola</button>
-<button onclick="filterShop('sai')" id="btn-sai">SAI</button>
-</div>
-<div style="text-align:center"><input id="search" placeholder="Search..." onkeyup="searchProducts()"><div id="count" style="font-weight:bold;margin:10px;color:#16a34a"></div></div>
-<div id="products">Loading luckson27.txt...</div>
+<div class="header"><h2>ZimGroceries 🇿🇼</h2><p>Online Marketplace</p></div>
+<div style="text-align:center"><input id="search" style="width:95%;padding:14px;border-radius:12px;border:1px solid #ccc" placeholder="Search..." onkeyup="searchProducts()"><div id="count" style="font-weight:bold;margin:10px;color:#16a34a">Loading your legacy shop...</div></div>
+<div id="products"></div>
+
 <script>
 let allProducts=[];
-function loadCSV(file, shop){
- return new Promise(res=>{
-  Papa.parse(file,{download:true,header:true,skipEmptyLines:true,
-   complete:r=>{
-    let clean=r.data.filter(p=>p.product||p.Product).map(p=>{
-     p.shop=shop;p.product=p.product||p.Product||'';p.sell=p['selling price']||p['Selling Price']||p.price||'';p.qty=p['quantity in stock']||p['Quantity in Stock']||0;return p;
-    });res(clean);
-   },error:()=>res([])});
- });
-}
-async function loadAll(){
- let nsola27=await loadCSV('luckson27.txt','Nsola Empire');
- let nsola21=await loadCSV('luckson21.txt','Nsola Empire');
- let main=await loadCSV('products.csv','Baraj Mart');
- let sai=await loadCSV('sai-mart.csv','SAI Mart');
- allProducts=[...main,...nsola27,...nsola21,...sai];
- document.getElementById('count').innerText=allProducts.length+' Products Available';
- display(allProducts);
+async function loadAnyFile(){
+ const files = ['luckson27.txt','Luckson27.txt','LUCKSON27.txt','luckson27.csv','luckson21.txt','products.csv'];
+ for(let file of files){
+  try{
+   let text = await fetch(file).then(r=>r.text());
+   if(text.length>100){
+    document.getElementById('count').innerText=`Found ${file} - ${text.length} characters - Parsing...`;
+    let parsed = Papa.parse(text,{header:true,skipEmptyLines:true});
+    if(parsed.data.length>0){
+     allProducts = parsed.data.map(p=>{
+      p.shop = 'Nsola Empire';
+      p.product = p.product || p.Product || Object.values(p)[0] || '';
+      p.sell = p['selling price'] || p['Selling Price'] || p.price || Object.values(p)[1] || '';
+      p.qty = p['quantity in stock'] || p['Quantity in Stock'] || Object.values(p)[2] || 0;
+      return p;
+     }).filter(p=>p.product);
+     document.getElementById('count').innerText=`${allProducts.length} Products Loaded from ${file} ✅`;
+     display(allProducts);
+     return;
+    }
+   }
+  }catch(e){console.log(file+' failed')}
+ }
+ document.getElementById('count').innerText='0 Products - Could not find luckson27.txt - Check file name!';
 }
 function display(list){
- document.getElementById('products').innerHTML=list.slice(0,500).map(p=>`
-  <div class="product"><b>${p.product}</b><br><span style="color:#16a34a;font-size:20px;font-weight:bold">$${p.sell}</span><br><small>Stock: ${p.qty}</small> | <small>${p.shop}</small><br><a class="order-btn" href="https://wa.me/263XXXXXXXXX?text=Order ${encodeURIComponent(p.product)}">Order WhatsApp</a></div>`).join('');
-}
-function filterShop(s){
- document.querySelectorAll('.shop-filter button').forEach(b=>b.classList.remove('active'));document.getElementById('btn-'+s).classList.add('active');
- if(s=='all')display(allProducts);else display(allProducts.filter(p=>p.shop.toLowerCase().includes(s)));
+ document.getElementById('products').innerHTML=list.slice(0,600).map(p=>`
+  <div class="product"><b>${p.product}</b><br><b style="color:#16a34a;font-size:20px">$${p.sell}</b><br><small>Stock: ${p.qty}</small> | ${p.shop}<br><a href="https://wa.me/263XXXXXXXXX?text=Order ${encodeURIComponent(p.product)}" style="background:#25D366;color:white;padding:8px 12px;border-radius:8px;text-decoration:none;display:inline-block;margin-top:5px">Order WhatsApp</a></div>
+ `).join('');
 }
 function searchProducts(){
- let q=document.getElementById('search').value.toLowerCase();if(!q)display(allProducts);else display(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(q)));
+ let q=document.getElementById('search').value.toLowerCase();
+ display(allProducts.filter(p=>JSON.stringify(p).toLowerCase().includes(q)));
 }
-if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');
-loadAll();
+loadAnyFile();
 </script>
 </body>
 </html>
