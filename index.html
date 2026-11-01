@@ -15,7 +15,7 @@ body{background:#f5f5f5}
 #search{width:92%;margin:10px 4%;padding:13px;border-radius:25px;border:1px solid #ddd}
 .product{background:white;margin:6px 10px;padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
 .price{color:#16a34a;font-weight:bold}
-.btn{background:#16a34a;color:white;border:none;padding:7px 12px;border-radius:15px;font-weight:bold}
+.btn{background:#16a34a;color:white;border:none;padding:7px 12px;border-radius:15px;font-weight:bold;cursor:pointer}
 .cart{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px;box-shadow:0 -2px 10px rgba(0,0,0,0.2);display:flex;justify-content:space-between;align-items:center;z-index:20}
 #admin{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;padding:20px;display:none;z-index:99;overflow:auto}
 .pay{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:5px}
@@ -24,11 +24,11 @@ body{background:#f5f5f5}
 </style>
 </head>
 <body>
-<div class="header"><h2>ZIM GROCERIES ZW 🇿🇼</h2><p style="font-size:12px" id="hCount">1335 Products • EcoCash InnBucks OmaRi</p></div>
+<div class="header"><h2>ZIM GROCERIES ZW 🇿🇼</h2><p style="font-size:12px" id="hCount">Loading 1335 Products...</p></div>
 <div class="shops">
-<div class="card active"><div style="font-size:28px">🛒</div><b>Nsola Empire</b><br><small id="nsolaCount">1335 Products</small></div>
-<div class="card" onclick="alert('Coming Soon - Vendor 0781022420')"><div style="font-size:28px">🏪</div><b>TM Pick n Pay</b><br><small>Coming Soon</small></div>
-<div class="card" onclick="alert('OK Coming Soon')"><div style="font-size:28px">🛍️</div><b>OK</b><br><small>Coming Soon</small></div>
+<div class="card active"><div style="font-size:28px">🛒</div><b>Nsola Empire</b><br><small id="nsolaCount">Loading...</small></div>
+<div class="card" onclick="alert('TM Pick n Pay Coming Soon - Vendor contact 0781022420')"><div style="font-size:28px">🏪</div><b>TM Pick n Pay</b><br><small>Coming Soon</small></div>
+<div class="card" onclick="alert('OK Zimbabwe Coming Soon')"><div style="font-size:28px">🛍️</div><b>OK</b><br><small>Coming Soon</small></div>
 <div class="card" onclick="alert('Spar Coming Soon')"><div style="font-size:28px">🥦</div><b>Spar</b><br><small>Coming Soon</small></div>
 </div>
 <input id="search" placeholder="Search 1335 products..." onkeyup="searchProd()">
@@ -39,27 +39,48 @@ body{background:#f5f5f5}
 <button onclick="setPay('OneMoney',this)">OneMoney</button>
 <button onclick="setPay('RTGS',this)">RTGS</button>
 </div>
-<div id="count" style="text-align:center;color:#16a34a;font-weight:bold;padding:10px;background:white;margin:10px;border-radius:10px">Loading 1335 products...</div>
+<div id="count" style="text-align:center;color:#16a34a;font-weight:bold;padding:10px;background:white;margin:10px;border-radius:10px">Reading your Excel file...</div>
 <div id="products"></div>
 <div style="height:90px"></div>
 <div class="cart"><div><b id="cartItems">0 items</b> • $<span id="cartTotal">0.00</span><br><small id="payLabel">Pay: EcoCash</small></div><button class="btn" style="background:#25D366;padding:12px 15px" onclick="checkout()">WhatsApp 0781022420</button></div>
 <div id="admin"><div style="background:white;color:black;padding:20px;border-radius:15px;max-width:500px;margin:20px auto"><h2>🔐 OWNER ADMIN - Hidden 14.5%</h2><div id="adminStats" style="margin:15px 0;background:#f0fdf4;padding:15px;border-radius:10px"></div><p style="font-size:12px">Type admin to open. Customers never see 14.5%.</p><button class="btn" style="width:100%;padding:12px;margin-top:10px" onclick="document.getElementById('admin').style.display='none'">Close</button></div></div>
 <script>
 let all=[], cart=[], payMethod='EcoCash'; const COMM=0.145;
-Papa.parse('luckson27.txt?v='+Date.now(),{download:true,header:true,skipEmptyLines:true,complete:function(res){
- let data=res.data.filter(r=>Object.values(r).join('').trim()!='');
- all=data.map(r=>{
-  let p=r.product||r.Product||r['product']||r['Item']||Object.values(r)[0];
-  let price=r['selling price']||r['selling_price']||r.price||r['Sale price']||Object.values(r)[1]||0;
-  let qty=r['quantity in stock']||r.qty||r['Quantity']||0;
-  let code=r.code||r.Code||'';
-  return {product:String(p).trim(), price:parseFloat(String(price).replace(/[^0-9.]/g,''))||0, qty:qty, code:code};
- }).filter(x=>x.product.length>2&&x.price>0);
- document.getElementById('count').innerText=all.length+' Products in Nsola Empire ✅';
- document.getElementById('nsolaCount').innerText=all.length+' Products';
- document.getElementById('hCount').innerText=all.length+' Products • EcoCash InnBucks OmaRi';
- display(all.slice(0,120));
-},error:function(e){document.getElementById('count').innerText='Error loading luckson27.txt - Make sure file exists in GitHub root!';}});
+Papa.parse('luckson27.txt?v='+Date.now(),{
+ download:true, header:false, skipEmptyLines:false,
+ complete:function(res){
+  let rows=res.data;
+  let products=[];
+  // Find header row: contains "Code" and "Item" and "Sale price"
+  let headerIdx=-1;
+  for(let i=0;i<Math.min(rows.length,10);i++){
+   let r=rows[i].join('|').toLowerCase();
+   if(r.includes('code') && r.includes('item') && r.includes('sale price')){ headerIdx=i; break; }
+  }
+  if(headerIdx==-1) headerIdx=1; // usually row 1
+  // Now parse from headerIdx+1 onwards
+  for(let i=headerIdx+1;i<rows.length;i++){
+   let row=rows[i];
+   if(!row||row.length<8) continue;
+   let code=row[0]?String(row[0]).trim():'';
+   let item=row[1]?String(row[1]).trim():'';
+   let qty=parseFloat(row[3])||0;
+   let salePrice=parseFloat(row[7])||0;
+   if(!item||item.length<3) continue;
+   if(item.toLowerCase().includes('total')) continue;
+   if(salePrice<=0) continue;
+   if(qty<=0) continue; // ONLY in-stock = 1335!
+   if(code.toLowerCase().includes('code')) continue;
+   products.push({product:item, price:salePrice, qty:qty, code:code});
+  }
+  all=products;
+  document.getElementById('count').innerText=products.length+' Products in Nsola Empire ✅';
+  document.getElementById('nsolaCount').innerText=products.length+' Products';
+  document.getElementById('hCount').innerText=products.length+' Products • EcoCash InnBucks OmaRi';
+  display(all.slice(0,120));
+ },
+ error:function(e){ document.getElementById('count').innerText='Error: '+e.message; }
+});
 function display(list){let h=''; for(let i=0;i<list.length;i++){let p=list[i]; let idx=all.indexOf(p); h+=`<div class="product"><div style="flex:1"><b>${p.product}</b><br><small>Stock: ${p.qty} | Code: ${p.code}</small></div><div style="text-align:right;margin-left:10px"><div class="price">$${Number(p.price).toFixed(2)}</div><button class="btn" onclick="add(${idx})">Add</button></div></div>`;} document.getElementById('products').innerHTML=h;}
 function add(i){let p=all[i]; let ex=cart.find(c=>c.code==p.code&&c.product==p.product); if(ex) ex.qty++; else cart.push({...p,qty:1}); update();}
 function update(){let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let qty=cart.reduce((s,c)=>s+c.qty,0); document.getElementById('cartItems').innerText=qty+' items'; document.getElementById('cartTotal').innerText=total.toFixed(2); let comm=total*COMM; document.getElementById('adminStats').innerHTML=`<b>Total Sales:</b> $${total.toFixed(2)}<br><b style="color:#16a34a;font-size:22px">Your 14.5% Commission: $${comm.toFixed(2)}</b><br><b>Vendor Gets:</b> $${(total-comm).toFixed(2)}<br><b>Vendor Owes You:</b> $${comm.toFixed(2)}<br><br>${cart.map(c=>`${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('<br>')}`;}
