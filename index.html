@@ -1,152 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZIM GROCERIES ZW - 1335 Products</title>
- <link rel="manifest" href="manifest.json">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#16a34a">
 <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081840.png">
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f5f5f5}
-.header{background:#16a34a;color:white;padding:15px;text-align:center;position:sticky;top:0;z-index:10}
-.shops{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
-.card{background:white;padding:12px;border-radius:12px;text-align:center;border:2px solid transparent;cursor:pointer}
-.card.active{border-color:#16a34a;background:#f0fdf4}
-#search{width:92%;margin:10px 4%;padding:13px;border-radius:25px;border:1px solid #ddd}
-.product{background:white;margin:6px 10px;padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
-.price{color:#16a34a;font-weight:bold}
-.btn{background:#16a34a;color:white;border:none;padding:7px 12px;border-radius:15px;font-weight:bold;cursor:pointer}
-.cart{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px;box-shadow:0 -2px 10px rgba(0,0,0,0.2);display:flex;justify-content:space-between;align-items:center;z-index:20}
-#admin{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;padding:20px;display:none;z-index:99;overflow:auto}
-.pay{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:5px}
-.pay button{padding:7px 12px;border-radius:20px;border:1px solid #16a34a;background:white;font-weight:bold;font-size:12px;cursor:pointer}
-.pay button.active{background:#16a34a;color:white}
-</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>.product-img{width:100%;height:110px;object-fit:contain;background:#f9f9f9;border-radius:8px;}</style>
 </head>
-<body>
-<div class="header"><h2>ZIM GROCERIES ZW 🇿🇼</h2><p style="font-size:12px" id="hCount">Loading 1335 Products...</p></div>
-<div class="shops">
-<div class="card active"><div style="font-size:28px">🛒</div><b>Nsola Empire</b><br><small id="nsolaCount">Loading...</small></div>
-<div class="card" onclick="alert('TM Pick n Pay Coming Soon - Vendor contact 0781022420')"><div style="font-size:28px">🏪</div><b>TM Pick n Pay</b><br><small>Coming Soon</small></div>
-<div class="card" onclick="alert('OK Zimbabwe Coming Soon')"><div style="font-size:28px">🛍️</div><b>OK</b><br><small>Coming Soon</small></div>
-<div class="card" onclick="alert('Spar Coming Soon')"><div style="font-size:28px">🥦</div><b>Spar</b><br><small>Coming Soon</small></div>
+<body class="bg-gray-50 pb-24">
+<div class="bg-green-600 text-white p-3 sticky top-0 z-20 flex justify-between items-center">
+<h1 class="font-bold">🛒 ZIM GROCERIES ZW</h1><span class="bg-white text-green-700 px-2 py-1 rounded-full text-xs font-bold">EcoCash</span>
 </div>
-<input id="search" placeholder="Search 1335 products..." onkeyup="searchProd()">
-<div class="pay">
-<button class="active" onclick="setPay('EcoCash',this)">EcoCash</button>
-<button onclick="setPay('InnBucks',this)">InnBucks</button>
-<button onclick="setPay('OmaRi',this)">OmaRi</button>
-<button onclick="setPay('OneMoney',this)">OneMoney</button>
-<button onclick="setPay('RTGS',this)">RTGS</button>
+<div class="p-3 bg-white sticky top-14 z-10 shadow-sm">
+<input id="searchInput" placeholder="Search... admin for commission" class="w-full p-3 border rounded-xl" oninput="filterProducts()">
+<p id="productCount" class="text-xs text-gray-500 mt-2">Loading...</p>
 </div>
-<div id="count" style="text-align:center;color:#16a34a;font-weight:bold;padding:10px;background:white;margin:10px;border-radius:10px">Reading your Excel file...</div>
-<div id="products"></div>
-<div style="height:90px"></div>
-<div class="cart"><div><b id="cartItems">0 items</b> • $<span id="cartTotal">0.00</span><br><small id="payLabel">Pay: EcoCash</small></div><button class="btn" style="background:#25D366;padding:12px 15px" onclick="checkout()">WhatsApp 0781022420</button></div>
-<div id="admin"><div style="background:white;color:black;padding:20px;border-radius:15px;max-width:500px;margin:20px auto"><h2>🔐 OWNER ADMIN - Hidden 14.5%</h2><div id="adminStats" style="margin:15px 0;background:#f0fdf4;padding:15px;border-radius:10px"></div><p style="font-size:12px">Type admin to open. Customers never see 14.5%.</p><button class="btn" style="width:100%;padding:12px;margin-top:10px" onclick="document.getElementById('admin').style.display='none'">Close</button></div></div>
+<div id="productsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 p-3"></div>
+<div id="bottomCartBar" onclick="openCart()" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#16a34a;color:white;padding:14px;text-align:center;font-weight:bold;z-index:25;cursor:pointer;border-radius:15px 15px 0 0;">Cart</div>
+<div id="cartModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:50;overflow-y:auto;">
+<div style="background:white;max-width:420px;margin:20px auto;border-radius:15px;padding:20px;">
+<div style="display:flex;justify-content:space-between;"><h3 class="font-bold">Your Cart 🛒</h3><button onclick="document.getElementById('cartModal').style.display='none'" style="font-size:24px;">✕</button></div>
+<div id="cartItems"></div>
+<div style="margin-top:20px;border-top:2px solid #eee;padding-top:15px;">
+<h4 class="font-bold mb-2">Your Details 📍</h4>
+<input id="custName" placeholder="Full Name *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
+<input id="custPhone" placeholder="Phone EcoCash *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
+<input id="custLocation" placeholder="Location / Address *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
+<select id="custPayment" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:12px;"><option>EcoCash</option><option>InnBucks</option><option>OneMoney</option><option>USD Cash</option><option>RTGS</option></select>
+<div style="display:flex;justify-content:space-between;font-weight:bold;font-size:18px;"><span>Total:</span><span id="cartTotal">$0.00</span></div>
+<div id="commissionInfo" style="display:none;background:#fef3c7;padding:8px;border-radius:6px;font-size:12px;margin:8px 0;"></div>
+<button onclick="sendWhatsAppOrder()" style="width:100%;background:#16a34a;color:white;padding:14px;border-radius:10px;font-weight:bold;">📱 Send WhatsApp Order</button>
+<button onclick="clearCart()" style="width:100%;margin-top:8px;background:#eee;padding:10px;border-radius:10px;">Clear Cart</button>
+</div></div></div>
 <script>
-let all=[], cart=[], payMethod='EcoCash'; const COMM=0.145;
-Papa.parse('luckson27.txt?v='+Date.now(),{
- download:true, header:false, skipEmptyLines:false,
- complete:function(res){
-  let rows=res.data;
-  let products=[];
-  // Find header row: contains "Code" and "Item" and "Sale price"
-  let headerIdx=-1;
-  for(let i=0;i<Math.min(rows.length,10);i++){
-   let r=rows[i].join('|').toLowerCase();
-   if(r.includes('code') && r.includes('item') && r.includes('sale price')){ headerIdx=i; break; }
-  }
-  if(headerIdx==-1) headerIdx=1; // usually row 1
-  // Now parse from headerIdx+1 onwards
-  for(let i=headerIdx+1;i<rows.length;i++){
-   let row=rows[i];
-   if(!row||row.length<8) continue;
-   let code=row[0]?String(row[0]).trim():'';
-   let item=row[1]?String(row[1]).trim():'';
-   let qty=parseFloat(row[3])||0;
-   let salePrice=parseFloat(row[7])||0;
-   if(!item||item.length<3) continue;
-   if(item.toLowerCase().includes('total')) continue;
-   if(salePrice<=0) continue;
-   if(qty<=0) continue; // ONLY in-stock = 1335!
-   if(code.toLowerCase().includes('code')) continue;
-   products.push({product:item, price:salePrice, qty:qty, code:code});
-  }
-  all=products;
-  document.getElementById('count').innerText=products.length+' Products in Nsola Empire ✅';
-  document.getElementById('nsolaCount').innerText=products.length+' Products';
-  document.getElementById('hCount').innerText=products.length+' Products • EcoCash InnBucks OmaRi';
-  display(all.slice(0,120));
- },
- error:function(e){ document.getElementById('count').innerText='Error: '+e.message; }
-});
-function display(list){let h=''; for(let i=0;i<list.length;i++){let p=list[i]; let idx=all.indexOf(p); h+=`<div class="product"><div style="flex:1"><b>${p.product}</b><br><small>Stock: ${p.qty} | Code: ${p.code}</small></div><div style="text-align:right;margin-left:10px"><div class="price">$${Number(p.price).toFixed(2)}</div><button class="btn" onclick="add(${idx})">Add</button></div></div>`;} document.getElementById('products').innerHTML=h;}
-function add(i){let p=all[i]; let ex=cart.find(c=>c.code==p.code&&c.product==p.product); if(ex) ex.qty++; else cart.push({...p,qty:1}); update();}
-function update(){let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let qty=cart.reduce((s,c)=>s+c.qty,0); document.getElementById('cartItems').innerText=qty+' items'; document.getElementById('cartTotal').innerText=total.toFixed(2); let comm=total*COMM; document.getElementById('adminStats').innerHTML=`<b>Total Sales:</b> $${total.toFixed(2)}<br><b style="color:#16a34a;font-size:22px">Your 14.5% Commission: $${comm.toFixed(2)}</b><br><b>Vendor Gets:</b> $${(total-comm).toFixed(2)}<br><b>Vendor Owes You:</b> $${comm.toFixed(2)}<br><br>${cart.map(c=>`${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('<br>')}`;}
-function setPay(m,el){payMethod=m; document.querySelectorAll('.pay button').forEach(b=>b.classList.remove('active')); el.classList.add('active'); document.getElementById('payLabel').innerText='Pay: '+m;}
-function searchProd(){let q=document.getElementById('search').value.toLowerCase(); if(q=='admin'){document.getElementById('admin').style.display='block'; document.getElementById('search').value=''; return;} if(q.length<2){display(all.slice(0,120)); return;} display(all.filter(p=>p.product.toLowerCase().includes(q)).slice(0,200));}
-function checkout(){if(cart.length==0){alert('Add products first!');return;} let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let msg=`*ZIM GROCERIES ORDER - ${all.length} PRODUCTS*%0A*Shop:* Nsola Empire%0A*Payment:* ${payMethod}%0A%0A${cart.map(c=>`- ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*TOTAL: $${total.toFixed(2)}*%0A%0AConfirm & send proof to 0781022420`; window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');}
+const imageMap={"alpha":"images/alpha-10kg.jpg","roller meal":"images/alpha-10kg.jpg","huletts":"images/huletts-brown.jpg","brown sugar":"images/huletts-brown.jpg","boom":"images/boom-2kg.jpg","washing powder":"images/boom-2kg.jpg","zimgold":"images/zimgold-2l.jpg","cooking oil":"images/zimgold-2l.jpg","red seal":"images/redseal-1kg.jpg","fine salt":"images/redseal-1kg.jpg","gloria":"https://cdn-icons-png.flaticon.com/512/3081/3081840.png","flour":"https://cdn-icons-png.flaticon.com/512/3081/3081840.png","rice":"https://cdn-icons-png.flaticon.com/512/2718/2718224.png","bread":"https://cdn-icons-png.flaticon.com/512/3081/3081856.png","wine":"https://cdn-icons-png.flaticon.com/512/2907/2907196.png","alcohol":"https://cdn-icons-png.flaticon.com/512/2907/2907196.png","mayonnaise":"https://cdn-icons-png.flaticon.com/512/3075/3075977.png","mayonaise":"https://cdn-icons-png.flaticon.com/512/3075/3075977.png"};
+function getProductImage(n){n=n.toLowerCase();for(let k in imageMap){if(n.includes(k))return imageMap[k];}return "https://cdn-icons-png.flaticon.com/512/3081/3081840.png";}
+let allProducts=[],cart=[];
+async function loadProducts(){try{let r=await fetch('luckson27.txt');let t=await r.text();let lines=t.split('\n');allProducts=[];lines.forEach(line=>{line=line.trim();if(!line)return;let parts=line.split('\t');if(parts.length<2)parts=line.split(',');if(parts.length<2)parts=line.split('|');let code='',name='',price='',stock='';if(parts.length>=4){code=parts[0].trim();name=parts[1].trim();price=parts[2].replace(/[^0-9.]/g,'').trim();stock=parts[3].trim();}else if(parts.length==3){code=parts[0].trim();name=parts[1].trim();price=parts[2].replace(/[^0-9.]/g,'').trim();}else if(parts.length==2){name=parts[0].trim();price=parts[1].replace(/[^0-9.]/g,'').trim();code=Math.random().toString(36).substring(2,7);}else{name=line.substring(0,60);price='0';code=Math.random().toString(36).substring(2,7);}if(!name||!price)return;if(parseFloat(price)>10000)return;allProducts.push({code,name,price:parseFloat(price),stock:stock||'In Stock'});});document.getElementById('productCount').innerText=allProducts.length+' Products Loaded';renderProducts(allProducts);}catch(e){document.getElementById('productCount').innerText='Error: '+e;}}
+function renderProducts(list){let g=document.getElementById('productsGrid');g.innerHTML='';list.slice(0,500).forEach(p=>{let img=getProductImage(p.name);let d=document.createElement('div');d.className='bg-white rounded-xl p-2 shadow-sm border';d.innerHTML=`<img src="${img}" class="product-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3081/3081840.png'"><h3 class="font-bold text-xs mt-2 h-8 overflow-hidden">${p.name}</h3><p class="text-[10px] text-gray-500">Code:${p.code}</p><p class="font-bold text-green-600 text-sm">$${p.price.toFixed(2)}</p><button onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${p.code}')" class="w-full mt-1 bg-green-600 text-white text-xs py-2 rounded-lg font-bold">Add</button>`;g.appendChild(d);});}
+function filterProducts(){let q=document.getElementById('searchInput').value.toLowerCase();if(q==='admin'){let tot=0;cart.forEach(i=>tot+=i.price*i.qty);alert(`ADMIN 14.5%\nTotal:$${tot.toFixed(2)}\nYour Cut:$${(tot*0.145).toFixed(2)}\nVendor:$${(tot*0.855).toFixed(2)}`);return;}if(!q){renderProducts(allProducts);return;}let f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.code.toLowerCase().includes(q));renderProducts(f);}
+function addToCart(name,price,code){let it=cart.find(i=>i.code===code);if(it){it.qty++;}else{cart.push({name,price:parseFloat(price),code,qty:1});}updateCartUI();}
+function changeQty(code,delta){let it=cart.find(i=>i.code===code);if(!it)return;it.qty+=delta;if(it.qty<=0)cart=cart.filter(i=>i.code!==code);updateCartUI();}
+function clearCart(){cart=[];updateCartUI();document.getElementById('cartModal').style.display='none';}
+function updateCartUI(){let tot=0,cnt=0,html='';cart.forEach(item=>{tot+=item.price*item.qty;cnt+=item.qty;html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee;"><div style="flex:1"><b style="font-size:13px">${item.name}</b><br><small>$${item.price.toFixed(2)} x ${item.qty} = $${(item.price*item.qty).toFixed(2)}</small></div><div style="display:flex;gap:8px;align-items:center;"><button onclick="changeQty('${item.code}',-1)" style="background:#fee;padding:6px 12px;border-radius:8px;font-weight:bold;">−</button><span style="font-weight:bold;">${item.qty}</span><button onclick="changeQty('${item.code}',1)" style="background:#dcfce7;padding:6px 12px;border-radius:8px;font-weight:bold;">+</button></div></div>`;});if(cart.length===0)html='<p style="text-align:center;color:#999;padding:20px;">Cart empty</p>';document.getElementById('cartItems').innerHTML=html;document.getElementById('cartTotal').innerText='$'+tot.toFixed(2);let comm=document.getElementById('commissionInfo');if(tot>0){comm.style.display='block';comm.innerHTML=`Your 14.5%=$${(tot*0.145).toFixed(2)} • Vendor=$${(tot*0.855).toFixed(2)}`;}else comm.style.display='none';let bar=document.getElementById('bottomCartBar');if(cnt>0){bar.style.display='block';bar.innerText=cnt+' items • $'+tot.toFixed(2)+' - Tap to checkout';}else bar.style.display='none';}
+function openCart(){document.getElementById('cartModal').style.display='block';}
+function sendWhatsAppOrder(){let name=document.getElementById('custName').value.trim(),phone=document.getElementById('custPhone').value.trim(),loc=document.getElementById('custLocation').value.trim(),pay=document.getElementById('custPayment').value;if(!name||!phone||!loc){alert('Fill Name, Phone, Location!');return;}if(cart.length===0){alert('Cart empty!');return;}let msg=`*ZIM GROCERIES ZW ORDER* 🛒%0A%0ACustomer:${name}%0APhone:${phone}%0ALocation:${loc}%0APayment:${pay}%0A%0A*ITEMS:*%0A`;let tot=0;cart.forEach(i=>{msg+=`• ${i.name} x${i.qty} - $${(i.price*i.qty).toFixed(2)}%0A`;tot+=i.price*i.qty;});msg+=`%0A*TOTAL:$${tot.toFixed(2)}*%0A%0ADeliver to:${loc}`;window.open('https://wa.me/263781022420?text='+msg,'_blank');}
+let deferredPrompt;const installBtn=document.createElement('button');installBtn.innerHTML='📲 Install App';installBtn.style='position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;display:none';document.body.appendChild(installBtn);function showInstallInstructions(){alert('📲 INSTALL:\nIPHONE: Share 📤 > Add to Home Screen\nANDROID: 3 dots ⋮ > Install App');}window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block';});installBtn.onclick=()=>{if(deferredPrompt){deferredPrompt.prompt();}else{showInstallInstructions();}};setTimeout(()=>{installBtn.style.display='block';if(!deferredPrompt)installBtn.onclick=showInstallInstructions;},3000);if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}loadProducts();
 </script>
-<script>
-<script>
-// PWA Install - Works on iPhone + Android + WhatsApp browser
-let deferredPrompt;
-const installBtn = document.createElement('button');
-installBtn.innerHTML = '📲 Install App';
-installBtn.style = 'position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,0.3);display:none';
-document.body.appendChild(installBtn);
-
-function showInstallInstructions() {
-  alert('📲 TO INSTALL APP:\n\nIPHONE:\n1. Tap Share button 📤 (top)\n2. Tap Add to Home Screen\n3. Tap Add\n\nANDROID:\n1. Tap 3 dots ⋮ (top right)\n2. Tap Install App or Add to Home Screen\n\nIcon will appear like WhatsApp!');
-}
-
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = 'block';
-});
-
-installBtn.onclick = () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { installBtn.style.display='none'; });
-  } else {
-    showInstallInstructions();
-  }
-};
-
-// ALWAYS show button after 3 seconds (for iPhone/WhatsApp browser)
-setTimeout(() => {
-  installBtn.style.display = 'block';
-  if (!deferredPrompt) {
-    installBtn.onclick = showInstallInstructions;
-  }
-}, 3000);
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script>
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  let btn = document.createElement('button');
-  btn.innerText = '📲 Install App';
-  btn.style = 'position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,0.3)';
-  btn.onclick = () => {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => { btn.remove(); });
-  };
-  document.body.appendChild(btn);
-  setTimeout(()=>btn.remove(), 10000);
-});
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
-</script></body>
+</body>
 </html>
