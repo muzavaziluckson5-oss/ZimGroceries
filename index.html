@@ -92,7 +92,45 @@ function searchProd(){let q=document.getElementById('search').value.toLowerCase(
 function checkout(){if(cart.length==0){alert('Add products first!');return;} let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let msg=`*ZIM GROCERIES ORDER - ${all.length} PRODUCTS*%0A*Shop:* Nsola Empire%0A*Payment:* ${payMethod}%0A%0A${cart.map(c=>`- ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*TOTAL: $${total.toFixed(2)}*%0A%0AConfirm & send proof to 0781022420`; window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');}
 </script>
 <script>
-// PWA Install
+<script>
+// PWA Install - Works on iPhone + Android + WhatsApp browser
+let deferredPrompt;
+const installBtn = document.createElement('button');
+installBtn.innerHTML = '📲 Install App';
+installBtn.style = 'position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,0.3);display:none';
+document.body.appendChild(installBtn);
+
+function showInstallInstructions() {
+  alert('📲 TO INSTALL APP:\n\nIPHONE:\n1. Tap Share button 📤 (top)\n2. Tap Add to Home Screen\n3. Tap Add\n\nANDROID:\n1. Tap 3 dots ⋮ (top right)\n2. Tap Install App or Add to Home Screen\n\nIcon will appear like WhatsApp!');
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'block';
+});
+
+installBtn.onclick = () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { installBtn.style.display='none'; });
+  } else {
+    showInstallInstructions();
+  }
+};
+
+// ALWAYS show button after 3 seconds (for iPhone/WhatsApp browser)
+setTimeout(() => {
+  installBtn.style.display = 'block';
+  if (!deferredPrompt) {
+    installBtn.onclick = showInstallInstructions;
+  }
+}, 3000);
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
