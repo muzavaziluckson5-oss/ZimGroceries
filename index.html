@@ -91,5 +91,24 @@ function setPay(m,el){payMethod=m; document.querySelectorAll('.pay button').forE
 function searchProd(){let q=document.getElementById('search').value.toLowerCase(); if(q=='admin'){document.getElementById('admin').style.display='block'; document.getElementById('search').value=''; return;} if(q.length<2){display(all.slice(0,120)); return;} display(all.filter(p=>p.product.toLowerCase().includes(q)).slice(0,200));}
 function checkout(){if(cart.length==0){alert('Add products first!');return;} let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let msg=`*ZIM GROCERIES ORDER - ${all.length} PRODUCTS*%0A*Shop:* Nsola Empire%0A*Payment:* ${payMethod}%0A%0A${cart.map(c=>`- ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*TOTAL: $${total.toFixed(2)}*%0A%0AConfirm & send proof to 0781022420`; window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');}
 </script>
-</body>
+<script>
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  let btn = document.createElement('button');
+  btn.innerText = '📲 Install App';
+  btn.style = 'position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;box-shadow:0 2px 10px rgba(0,0,0,0.3)';
+  btn.onclick = () => {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => { btn.remove(); });
+  };
+  document.body.appendChild(btn);
+  setTimeout(()=>btn.remove(), 10000);
+});
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script></body>
 </html>
