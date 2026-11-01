@@ -1,54 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZIM GROCERIES ZW - 1335 Products</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#16a34a">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3081/3081840.png">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZIM GROCERIES ZW</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#16a34a">
 <script src="https://cdn.tailwindcss.com"></script>
 <style>.product-img{width:100%;height:110px;object-fit:contain;background:#f9f9f9;border-radius:8px;}</style>
 </head>
 <body class="bg-gray-50 pb-24">
-<div class="bg-green-600 text-white p-3 sticky top-0 z-20 flex justify-between items-center">
-<h1 class="font-bold">🛒 ZIM GROCERIES ZW</h1><span class="bg-white text-green-700 px-2 py-1 rounded-full text-xs font-bold">EcoCash</span>
-</div>
-<div class="p-3 bg-white sticky top-14 z-10 shadow-sm">
-<input id="searchInput" placeholder="Search... admin for commission" class="w-full p-3 border rounded-xl" oninput="filterProducts()">
-<p id="productCount" class="text-xs text-gray-500 mt-2">Loading...</p>
-</div>
+<div class="bg-green-600 text-white p-3 sticky top-0 z-20 flex justify-between"><h1 class="font-bold">🛒 ZIM GROCERIES ZW - GWANDA</h1><span class="bg-white text-green-700 px-2 py-1 rounded-full text-xs font-bold">EcoCash</span></div>
+<div class="p-3 bg-white sticky top-14 z-10"><input id="searchInput" placeholder="Search products... admin for commission" class="w-full p-3 border rounded-xl" oninput="filterProducts()"><p id="productCount" class="text-xs text-gray-500 mt-2">Loading Gwanda stock...</p></div>
 <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-4 gap-3 p-3"></div>
 <div id="bottomCartBar" onclick="openCart()" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#16a34a;color:white;padding:14px;text-align:center;font-weight:bold;z-index:25;cursor:pointer;border-radius:15px 15px 0 0;">Cart</div>
-<div id="cartModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:50;overflow-y:auto;">
-<div style="background:white;max-width:420px;margin:20px auto;border-radius:15px;padding:20px;">
-<div style="display:flex;justify-content:space-between;"><h3 class="font-bold">Your Cart 🛒</h3><button onclick="document.getElementById('cartModal').style.display='none'" style="font-size:24px;">✕</button></div>
-<div id="cartItems"></div>
-<div style="margin-top:20px;border-top:2px solid #eee;padding-top:15px;">
-<h4 class="font-bold mb-2">Your Details 📍</h4>
-<input id="custName" placeholder="Full Name *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
-<input id="custPhone" placeholder="Phone EcoCash *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
-<input id="custLocation" placeholder="Location / Address *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">
-<select id="custPayment" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:12px;"><option>EcoCash</option><option>InnBucks</option><option>OneMoney</option><option>USD Cash</option><option>RTGS</option></select>
-<div style="display:flex;justify-content:space-between;font-weight:bold;font-size:18px;"><span>Total:</span><span id="cartTotal">$0.00</span></div>
-<div id="commissionInfo" style="display:none;background:#fef3c7;padding:8px;border-radius:6px;font-size:12px;margin:8px 0;"></div>
-<button onclick="sendWhatsAppOrder()" style="width:100%;background:#16a34a;color:white;padding:14px;border-radius:10px;font-weight:bold;">📱 Send WhatsApp Order</button>
-<button onclick="clearCart()" style="width:100%;margin-top:8px;background:#eee;padding:10px;border-radius:10px;">Clear Cart</button>
-</div></div></div>
+<div id="cartModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:50;overflow-y:auto;"><div style="background:white;max-width:420px;margin:20px auto;border-radius:15px;padding:20px;"><div style="display:flex;justify-content:space-between;"><h3 class="font-bold">Your Cart 🛒</h3><button onclick="document.getElementById('cartModal').style.display='none'" style="font-size:24px;">✕</button></div><div id="cartItems"></div><div style="margin-top:20px;border-top:2px solid #eee;padding-top:15px;"><h4 class="font-bold mb-2">Your Details 📍</h4><input id="custName" placeholder="Full Name *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;"><input id="custPhone" placeholder="Phone EcoCash *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;"><input id="custLocation" placeholder="Location / Address *" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;"><select id="custPayment" style="width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:12px;"><option>EcoCash</option><option>InnBucks</option><option>OneMoney</option><option>USD Cash</option><option>RTGS</option></select><div style="display:flex;justify-content:space-between;font-weight:bold;font-size:18px;"><span>Total:</span><span id="cartTotal">$0.00</span></div><div id="commissionInfo" style="display:none;background:#fef3c7;padding:8px;border-radius:6px;font-size:12px;margin:8px 0;"></div><button onclick="sendWhatsAppOrder()" style="width:100%;background:#16a34a;color:white;padding:14px;border-radius:10px;font-weight:bold;">📱 Send WhatsApp Order 0781022420</button><button onclick="clearCart()" style="width:100%;margin-top:8px;background:#eee;padding:10px;border-radius:10px;">Clear Cart</button></div></div></div>
 <script>
-const imageMap={"alpha":"images/alpha-10kg.jpg","roller meal":"images/alpha-10kg.jpg","huletts":"images/huletts-brown.jpg","brown sugar":"images/huletts-brown.jpg","boom":"images/boom-2kg.jpg","washing powder":"images/boom-2kg.jpg","zimgold":"images/zimgold-2l.jpg","cooking oil":"images/zimgold-2l.jpg","red seal":"images/redseal-1kg.jpg","fine salt":"images/redseal-1kg.jpg","gloria":"https://cdn-icons-png.flaticon.com/512/3081/3081840.png","flour":"https://cdn-icons-png.flaticon.com/512/3081/3081840.png","rice":"https://cdn-icons-png.flaticon.com/512/2718/2718224.png","bread":"https://cdn-icons-png.flaticon.com/512/3081/3081856.png","wine":"https://cdn-icons-png.flaticon.com/512/2907/2907196.png","alcohol":"https://cdn-icons-png.flaticon.com/512/2907/2907196.png","mayonnaise":"https://cdn-icons-png.flaticon.com/512/3075/3075977.png","mayonaise":"https://cdn-icons-png.flaticon.com/512/3075/3075977.png"};
+const imageMap={"alpha":"images/alpha-10kg.jpg","roller meal":"images/alpha-10kg.jpg","huletts":"images/huletts-brown.jpg","brown sugar":"images/huletts-brown.jpg","boom":"images/boom-2kg.jpg","zimgold":"images/zimgold-2l.jpg","cooking oil":"images/zimgold-2l.jpg","red seal":"images/redseal-1kg.jpg","salt":"images/redseal-1kg.jpg"};
 function getProductImage(n){n=n.toLowerCase();for(let k in imageMap){if(n.includes(k))return imageMap[k];}return "https://cdn-icons-png.flaticon.com/512/3081/3081840.png";}
 let allProducts=[],cart=[];
-async function loadProducts(){try{let r=await fetch('luckson27.txt');let t=await r.text();let lines=t.split('\n');allProducts=[];lines.forEach(line=>{line=line.trim();if(!line)return;let parts=line.split('\t');if(parts.length<2)parts=line.split(',');if(parts.length<2)parts=line.split('|');let code='',name='',price='',stock='';if(parts.length>=4){code=parts[0].trim();name=parts[1].trim();price=parts[2].replace(/[^0-9.]/g,'').trim();stock=parts[3].trim();}else if(parts.length==3){code=parts[0].trim();name=parts[1].trim();price=parts[2].replace(/[^0-9.]/g,'').trim();}else if(parts.length==2){name=parts[0].trim();price=parts[1].replace(/[^0-9.]/g,'').trim();code=Math.random().toString(36).substring(2,7);}else{name=line.substring(0,60);price='0';code=Math.random().toString(36).substring(2,7);}if(!name||!price)return;if(parseFloat(price)>10000)return;allProducts.push({code,name,price:parseFloat(price),stock:stock||'In Stock'});});document.getElementById('productCount').innerText=allProducts.length+' Products Loaded';renderProducts(allProducts);}catch(e){document.getElementById('productCount').innerText='Error: '+e;}}
-function renderProducts(list){let g=document.getElementById('productsGrid');g.innerHTML='';list.slice(0,500).forEach(p=>{let img=getProductImage(p.name);let d=document.createElement('div');d.className='bg-white rounded-xl p-2 shadow-sm border';d.innerHTML=`<img src="${img}" class="product-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3081/3081840.png'"><h3 class="font-bold text-xs mt-2 h-8 overflow-hidden">${p.name}</h3><p class="text-[10px] text-gray-500">Code:${p.code}</p><p class="font-bold text-green-600 text-sm">$${p.price.toFixed(2)}</p><button onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${p.code}')" class="w-full mt-1 bg-green-600 text-white text-xs py-2 rounded-lg font-bold">Add</button>`;g.appendChild(d);});}
-function filterProducts(){let q=document.getElementById('searchInput').value.toLowerCase();if(q==='admin'){let tot=0;cart.forEach(i=>tot+=i.price*i.qty);alert(`ADMIN 14.5%\nTotal:$${tot.toFixed(2)}\nYour Cut:$${(tot*0.145).toFixed(2)}\nVendor:$${(tot*0.855).toFixed(2)}`);return;}if(!q){renderProducts(allProducts);return;}let f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.code.toLowerCase().includes(q));renderProducts(f);}
-function addToCart(name,price,code){let it=cart.find(i=>i.code===code);if(it){it.qty++;}else{cart.push({name,price:parseFloat(price),code,qty:1});}updateCartUI();}
-function changeQty(code,delta){let it=cart.find(i=>i.code===code);if(!it)return;it.qty+=delta;if(it.qty<=0)cart=cart.filter(i=>i.code!==code);updateCartUI();}
+async function loadProducts(){
+  try{
+    let r=await fetch('luckson27.txt');let t=await r.text();
+    let lines=t.split('\n');allProducts=[];
+    for(let i=0;i<lines.length;i++){
+      let line=lines[i].trim();if(!line)continue;
+      if(line.toLowerCase().includes('code,')||line.toLowerCase().includes('items in stock')||line.startsWith(',,item'))continue;
+      let parts=line.split(',');
+      if(parts.length<8)continue;
+      let code=parts[0].trim();
+      let name=parts[1].trim();
+      if(!name||name.length<3)continue;
+      if(!/^\d+$/.test(code))continue;
+      let qty=parseFloat(parts[3])||0;
+      let purchasePrice=parseFloat(parts[4])||0;
+      let salePrice=parseFloat(parts[7])||0;
+      // USE SALE PRICE, if 0 use Purchase + 30%
+      let finalPrice=salePrice>0?salePrice:(purchasePrice>0?purchasePrice*1.3:0);
+      if(finalPrice<=0)continue; // skip no price
+      // Only show items with stock? Show even negative for now if qty !=0
+      // if(qty<=0)continue; // uncomment to hide out of stock
+      allProducts.push({code,name,price:finalPrice,stock:qty,qtyRaw:qty});
+    }
+    document.getElementById('productCount').innerText=allProducts.length+' Products In Stock - Gwanda - Prices OK';
+    renderProducts(allProducts);
+  }catch(e){document.getElementById('productCount').innerText='Error:'+e;}
+}
+function renderProducts(list){let g=document.getElementById('productsGrid');g.innerHTML='';list.slice(0,500).forEach(p=>{let img=getProductImage(p.name);let d=document.createElement('div');d.className='bg-white rounded-xl p-2 shadow-sm border';d.innerHTML=`<img src="${img}" class="product-img"><h3 class="font-bold text-xs mt-2 h-10 overflow-hidden">${p.name}</h3><p class="text-[10px] text-gray-500">Code:${p.code} | Stock:${p.stock}</p><p class="font-bold text-green-600">$${p.price.toFixed(2)}</p><button onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${p.code}')" class="w-full mt-1 bg-green-600 text-white text-xs py-2 rounded-lg font-bold">Add</button>`;g.appendChild(d);});}
+function filterProducts(){let q=document.getElementById('searchInput').value.toLowerCase();if(q==='admin'){let tot=0;cart.forEach(i=>tot+=i.price*i.qty);alert(`ADMIN 14.5%\nTotal:$${tot.toFixed(2)}\nYour Cut:$${(tot*0.145).toFixed(2)}`);return;}if(!q){renderProducts(allProducts);return;}let f=allProducts.filter(p=>p.name.toLowerCase().includes(q)||p.code.toLowerCase().includes(q));renderProducts(f);}
+function addToCart(n,p,c){let it=cart.find(i=>i.code===c);if(it)it.qty++;else cart.push({name:n,price:parseFloat(p),code:c,qty:1});updateCartUI();}
+function changeQty(c,d){let it=cart.find(i=>i.code===c);if(!it)return;it.qty+=d;if(it.qty<=0)cart=cart.filter(i=>i.code!==c);updateCartUI();}
 function clearCart(){cart=[];updateCartUI();document.getElementById('cartModal').style.display='none';}
-function updateCartUI(){let tot=0,cnt=0,html='';cart.forEach(item=>{tot+=item.price*item.qty;cnt+=item.qty;html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee;"><div style="flex:1"><b style="font-size:13px">${item.name}</b><br><small>$${item.price.toFixed(2)} x ${item.qty} = $${(item.price*item.qty).toFixed(2)}</small></div><div style="display:flex;gap:8px;align-items:center;"><button onclick="changeQty('${item.code}',-1)" style="background:#fee;padding:6px 12px;border-radius:8px;font-weight:bold;">−</button><span style="font-weight:bold;">${item.qty}</span><button onclick="changeQty('${item.code}',1)" style="background:#dcfce7;padding:6px 12px;border-radius:8px;font-weight:bold;">+</button></div></div>`;});if(cart.length===0)html='<p style="text-align:center;color:#999;padding:20px;">Cart empty</p>';document.getElementById('cartItems').innerHTML=html;document.getElementById('cartTotal').innerText='$'+tot.toFixed(2);let comm=document.getElementById('commissionInfo');if(tot>0){comm.style.display='block';comm.innerHTML=`Your 14.5%=$${(tot*0.145).toFixed(2)} • Vendor=$${(tot*0.855).toFixed(2)}`;}else comm.style.display='none';let bar=document.getElementById('bottomCartBar');if(cnt>0){bar.style.display='block';bar.innerText=cnt+' items • $'+tot.toFixed(2)+' - Tap to checkout';}else bar.style.display='none';}
+function updateCartUI(){let tot=0,cnt=0,h='';cart.forEach(i=>{tot+=i.price*i.qty;cnt+=i.qty;h+=`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #eee;"><div style="flex:1"><b style="font-size:13px">${i.name}</b><br><small>$${i.price.toFixed(2)} x ${i.qty} = $${(i.price*i.qty).toFixed(2)}</small></div><div style="display:flex;gap:8px;align-items:center;"><button onclick="changeQty('${i.code}',-1)" style="background:#fee;padding:6px 12px;border-radius:8px;font-weight:bold;">−</button><span style="font-weight:bold;">${i.qty}</span><button onclick="changeQty('${i.code}',1)" style="background:#dcfce7;padding:6px 12px;border-radius:8px;font-weight:bold;">+</button></div></div>`;});if(cart.length===0)h='<p style="text-align:center;color:#999;padding:20px;">Cart empty</p>';document.getElementById('cartItems').innerHTML=h;document.getElementById('cartTotal').innerText='$'+tot.toFixed(2);let comm=document.getElementById('commissionInfo');if(tot>0){comm.style.display='block';comm.innerHTML=`Your 14.5%=$${(tot*0.145).toFixed(2)} • Vendor=$${(tot*0.855).toFixed(2)}`;}else comm.style.display='none';let bar=document.getElementById('bottomCartBar');if(cnt>0){bar.style.display='block';bar.innerText=cnt+' items • $'+tot.toFixed(2)+' - Tap to checkout';}else bar.style.display='none';}
 function openCart(){document.getElementById('cartModal').style.display='block';}
-function sendWhatsAppOrder(){let name=document.getElementById('custName').value.trim(),phone=document.getElementById('custPhone').value.trim(),loc=document.getElementById('custLocation').value.trim(),pay=document.getElementById('custPayment').value;if(!name||!phone||!loc){alert('Fill Name, Phone, Location!');return;}if(cart.length===0){alert('Cart empty!');return;}let msg=`*ZIM GROCERIES ZW ORDER* 🛒%0A%0ACustomer:${name}%0APhone:${phone}%0ALocation:${loc}%0APayment:${pay}%0A%0A*ITEMS:*%0A`;let tot=0;cart.forEach(i=>{msg+=`• ${i.name} x${i.qty} - $${(i.price*i.qty).toFixed(2)}%0A`;tot+=i.price*i.qty;});msg+=`%0A*TOTAL:$${tot.toFixed(2)}*%0A%0ADeliver to:${loc}`;window.open('https://wa.me/263781022420?text='+msg,'_blank');}
-let deferredPrompt;const installBtn=document.createElement('button');installBtn.innerHTML='📲 Install App';installBtn.style='position:fixed;top:60px;right:10px;background:#16a34a;color:white;padding:10px 15px;border-radius:20px;border:none;font-weight:bold;z-index:30;display:none';document.body.appendChild(installBtn);function showInstallInstructions(){alert('📲 INSTALL:\nIPHONE: Share 📤 > Add to Home Screen\nANDROID: 3 dots ⋮ > Install App');}window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;installBtn.style.display='block';});installBtn.onclick=()=>{if(deferredPrompt){deferredPrompt.prompt();}else{showInstallInstructions();}};setTimeout(()=>{installBtn.style.display='block';if(!deferredPrompt)installBtn.onclick=showInstallInstructions;},3000);if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}loadProducts();
+function sendWhatsAppOrder(){let n=document.getElementById('custName').value.trim(),ph=document.getElementById('custPhone').value.trim(),loc=document.getElementById('custLocation').value.trim(),pay=document.getElementById('custPayment').value;if(!n||!ph||!loc){alert('Fill Name, Phone, Location!');return;}if(cart.length===0){alert('Cart empty!');return;}let msg=`*ZIM GROCERIES ZW ORDER* 🛒%0A%0ACustomer:${n}%0APhone:${ph}%0ALocation:${loc}%0APayment:${pay}%0A%0A*ITEMS:*%0A`;let tot=0;cart.forEach(i=>{msg+=`• ${i.name} x${i.qty} - $${(i.price*i.qty).toFixed(2)}%0A`;tot+=i.price*i.qty;});msg+=`%0A*TOTAL:$${tot.toFixed(2)}*%0ADeliver to:${loc}`;window.open('https://wa.me/263781022420?text='+msg,'_blank');}
+loadProducts();
 </script>
 </body>
 </html>
