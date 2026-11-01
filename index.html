@@ -12,30 +12,26 @@ body{background:#f5f5f5}
 .shops{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
 .card{background:white;padding:12px;border-radius:12px;text-align:center;border:2px solid transparent;cursor:pointer}
 .card.active{border-color:#16a34a;background:#f0fdf4}
-#search{width:92%;margin:10px 4%;padding:13px;border-radius:25px;border:1px solid #ddd;font-size:15px}
-.pay{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:5px}
-.pay button{padding:7px 12px;border-radius:20px;border:1px solid #16a34a;background:white;font-weight:bold;font-size:12px;cursor:pointer}
-.pay button.active{background:#16a34a;color:white}
+#search{width:92%;margin:10px 4%;padding:13px;border-radius:25px;border:1px solid #ddd}
 .product{background:white;margin:6px 10px;padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center}
 .price{color:#16a34a;font-weight:bold}
 .btn{background:#16a34a;color:white;border:none;padding:7px 12px;border-radius:15px;font-weight:bold;cursor:pointer}
 .cart{position:fixed;bottom:0;left:0;right:0;background:white;padding:12px;box-shadow:0 -2px 10px rgba(0,0,0,0.2);display:flex;justify-content:space-between;align-items:center;z-index:20}
 #admin{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;padding:20px;display:none;z-index:99;overflow:auto}
-.cat{display:flex;gap:6px;overflow-x:auto;padding:5px 10px}
-.cat button{white-space:nowrap;padding:6px 12px;border-radius:20px;border:1px solid #ddd;background:white;font-size:12px}
-.cat button.active{background:#16a34a;color:white}
+.pay{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;padding:5px}
+.pay button{padding:7px 12px;border-radius:20px;border:1px solid #16a34a;background:white;font-weight:bold;font-size:12px;cursor:pointer}
+.pay button.active{background:#16a34a;color:white}
 </style>
 </head>
 <body>
-<div class="header"><h2>ZIM GROCERIES ZW 🇿🇼</h2><p style="font-size:12px" id="headerCount">Loading 1335 Products...</p></div>
+<div class="header"><h2>ZIM GROCERIES ZW 🇿🇼</h2><p style="font-size:12px" id="headerCount">Loading...</p></div>
 <div class="shops">
-<div class="card active" id="c-nsola"><div style="font-size:28px">🛒</div><b>Nsola Empire</b><br><small id="nsolaCount">1335 Products</small></div>
-<div class="card" onclick="alert('Coming Soon! Vendor contact 0781022420')"><div style="font-size:28px">🏪</div><b>TM Pick n Pay</b><br><small>Coming Soon</small></div>
-<div class="card" onclick="alert('OK Coming Soon')"><div style="font-size:28px">🛍️</div><b>OK Zimbabwe</b><br><small>Coming Soon</small></div>
-<div class="card" onclick="alert('Spar Coming Soon')"><div style="font-size:28px">🥦</div><b>Spar</b><br><small>Coming Soon</small></div>
+<div class="card active"><div style="font-size:28px">🛒</div><b>Nsola Empire</b><br><small id="nsolaCount">Loading...</small></div>
+<div class="card" onclick="alert('Coming Soon')"><div style="font-size:28px">🏪</div><b>TM Pick n Pay</b><br><small>Coming Soon</small></div>
+<div class="card" onclick="alert('Coming Soon')"><div style="font-size:28px">🛍️</div><b>OK Zimbabwe</b><br><small>Coming Soon</small></div>
+<div class="card" onclick="alert('Coming Soon')"><div style="font-size:28px">🥦</div><b>Spar</b><br><small>Coming Soon</small></div>
 </div>
-<div class="cat" id="categories"></div>
-<input id="search" placeholder="Search 1335 products..." onkeyup="searchProd()">
+<input id="search" placeholder="Search products..." onkeyup="searchProd()">
 <div class="pay">
 <button class="active" onclick="setPay('EcoCash',this)">EcoCash</button>
 <button onclick="setPay('InnBucks',this)">InnBucks</button>
@@ -43,60 +39,48 @@ body{background:#f5f5f5}
 <button onclick="setPay('OneMoney',this)">OneMoney</button>
 <button onclick="setPay('RTGS',this)">RTGS</button>
 </div>
-<div id="count" style="text-align:center;color:#16a34a;font-weight:bold;padding:5px">Loading Excel...</div>
+<div id="count" style="text-align:center;color:#16a34a;font-weight:bold;padding:10px;background:white;margin:10px;border-radius:10px">Checking for Excel file...</div>
 <div id="products"></div>
 <div style="height:90px"></div>
 <div class="cart"><div><b id="cartItems">0 items</b> • $<span id="cartTotal">0.00</span><br><small id="payLabel">Pay: EcoCash</small></div><button class="btn" style="background:#25D366;padding:12px 15px" onclick="checkout()">WhatsApp 0781022420</button></div>
-<div id="admin"><div style="background:white;color:black;padding:20px;border-radius:15px;max-width:500px;margin:20px auto"><h2>🔐 OWNER ADMIN - Hidden 14.5%</h2><div id="adminStats" style="margin:15px 0;background:#f0fdf4;padding:15px;border-radius:10px"></div><p style="font-size:12px">Customers NEVER see 14.5%. Type admin to open.</p><button class="btn" style="width:100%;margin-top:15px;padding:12px" onclick="document.getElementById('admin').style.display='none'">Close</button></div></div>
+<div id="admin"><div style="background:white;color:black;padding:20px;border-radius:15px;max-width:500px;margin:20px auto"><h2>🔐 OWNER ADMIN - 14.5%</h2><div id="adminStats" style="margin:15px 0;background:#f0fdf4;padding:15px;border-radius:10px"></div><button class="btn" style="width:100%;padding:12px" onclick="document.getElementById('admin').style.display='none'">Close</button></div></div>
 <script>
 let all=[], cart=[], payMethod='EcoCash'; const COMM=0.145;
+async function tryFetch(name){
+ try{ let r=await fetch(name+'?v='+Date.now()); if(r.ok){ let ab=await r.arrayBuffer(); return ab; } }catch(e){} return null;
+}
 async function loadExcel(){
+ let names=['luckson_27.xls','luckson 27.xls','luckson_27.XLS','luckson27.xls','luckson27.txt','Luckson 27.xls'];
+ let ab=null, usedName='';
+ for(let n of names){ let buf=await tryFetch(n); if(buf){ ab=buf; usedName=n; break; } }
+ if(!ab){
+  document.getElementById('count').innerHTML='❌ Excel file NOT FOUND in GitHub!<br><br>Go to GitHub repo and upload your Excel as <b>luckson_27.xls</b><br>Current files checked: '+names.join(', ')+'<br><br><button onclick="location.reload()" style="padding:10px 20px;background:#16a34a;color:white;border:none;border-radius:10px;margin-top:10px">Retry After Upload</button>';
+  return;
+ }
  try{
-  let res=await fetch('luckson_27.xls');
-  if(!res.ok) res=await fetch('luckson 27.xls');
-  let ab=await res.arrayBuffer();
   let wb=XLSX.read(ab,{type:'array'});
   let ws=wb.Sheets[wb.SheetNames[0]];
   let data=XLSX.utils.sheet_to_json(ws,{header:1});
-  // data[1] is header row: Code, Item, Measure, Qty, Purchase price...
   let products=[];
   for(let i=2;i<data.length;i++){
-   let row=data[i];
-   if(!row||row.length<2) continue;
-   let item=row[1]?String(row[1]).trim():'';
-   let qty=parseFloat(row[3])||0;
-   let sale=parseFloat(row[7])||0;
-   if(!item||item.length<3||item.toLowerCase().includes('total')) continue;
-   if(sale<=0) continue;
-   if(qty<=0) continue; // Only in-stock = 1335
+   let row=data[i]; if(!row||row.length<2) continue;
+   let item=row[1]?String(row[1]).trim():''; let qty=parseFloat(row[3])||0; let sale=parseFloat(row[7])||0;
+   if(!item||item.length<3||item.toLowerCase().includes('total')) continue; if(sale<=0||qty<=0) continue;
    products.push({product:item, price:sale, qty:qty, code:row[0]||''});
   }
   all=products;
-  document.getElementById('count').innerText=products.length+' Products in Nsola Empire ✅';
+  document.getElementById('count').innerText=products.length+' Products in Nsola Empire ✅ (from '+usedName+')';
   document.getElementById('nsolaCount').innerText=products.length+' Products';
   document.getElementById('headerCount').innerText=products.length+' Products • Shop From Home • EcoCash InnBucks OmaRi';
   display(all.slice(0,100));
-  let cats=['All','Drinks','Wash','Bread','Tea','Sugar','Oil','Meat','Soap','Rice'];
-  document.getElementById('categories').innerHTML=cats.map((c,idx)=>`<button class="${idx==0?'active':''}" onclick="filterCat('${c}',this)">${c}</button>`).join('');
- }catch(e){
-  document.getElementById('count').innerText='Error loading Excel: '+e.message+' - Upload luckson_27.xls to GitHub!';
- }
+ }catch(e){ document.getElementById('count').innerText='Error parsing Excel: '+e.message; }
 }
-function filterCat(cat,el){
- document.querySelectorAll('.cat button').forEach(b=>b.classList.remove('active'));
- el.classList.add('active');
- if(cat=='All') display(all.slice(0,100));
- else display(all.filter(p=>p.product.toLowerCase().includes(cat.toLowerCase())).slice(0,150));
-}
-function display(list){
- let h=''; for(let i=0;i<list.length;i++){let p=list[i]; let idx=all.indexOf(p); h+=`<div class="product"><div style="flex:1"><b>${p.product}</b><br><small>Stock: ${p.qty} | Code: ${p.code}</small></div><div style="text-align:right;margin-left:10px"><div class="price">$${Number(p.price).toFixed(2)}</div><button class="btn" onclick="add(${idx})">Add</button></div></div>`;}
- document.getElementById('products').innerHTML=h;
-}
+function display(list){ let h=''; for(let i=0;i<list.length;i++){let p=list[i]; let idx=all.indexOf(p); h+=`<div class="product"><div style="flex:1"><b>${p.product}</b><br><small>Stock: ${p.qty} | Code: ${p.code}</small></div><div style="text-align:right;margin-left:10px"><div class="price">$${Number(p.price).toFixed(2)}</div><button class="btn" onclick="add(${idx})">Add</button></div></div>`;} document.getElementById('products').innerHTML=h; }
 function add(i){let p=all[i]; let ex=cart.find(c=>c.code==p.code); if(ex) ex.qty++; else cart.push({...p,qty:1}); update();}
-function update(){let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let qty=cart.reduce((s,c)=>s+c.qty,0); document.getElementById('cartItems').innerText=qty+' items'; document.getElementById('cartTotal').innerText=total.toFixed(2); let comm=total*COMM; document.getElementById('adminStats').innerHTML=`<b>Total Sales:</b> $${total.toFixed(2)}<br><b style="color:#16a34a;font-size:20px">Your 14.5% Commission: $${comm.toFixed(2)}</b><br><b>Vendor Gets:</b> $${(total-comm).toFixed(2)}<br><b>Vendor Owes You:</b> $${comm.toFixed(2)}<br><br>${cart.map(c=>`${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('<br>')}`;}
+function update(){let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let qty=cart.reduce((s,c)=>s+c.qty,0); document.getElementById('cartItems').innerText=qty+' items'; document.getElementById('cartTotal').innerText=total.toFixed(2); let comm=total*COMM; document.getElementById('adminStats').innerHTML=`<b>Total:</b> $${total.toFixed(2)}<br><b style="color:#16a34a;font-size:20px">Your 14.5%: $${comm.toFixed(2)}</b><br><b>Vendor Gets:</b> $${(total-comm).toFixed(2)}<br><br>${cart.map(c=>`${c.product} x${c.qty}`).join('<br>')}`;}
 function setPay(m,el){payMethod=m; document.querySelectorAll('.pay button').forEach(b=>b.classList.remove('active')); el.classList.add('active'); document.getElementById('payLabel').innerText='Pay: '+m;}
 function searchProd(){let q=document.getElementById('search').value.toLowerCase(); if(q=='admin'){document.getElementById('admin').style.display='block'; document.getElementById('search').value=''; return;} if(q.length<2){display(all.slice(0,100)); return;} display(all.filter(p=>p.product.toLowerCase().includes(q)).slice(0,200));}
-function checkout(){if(cart.length==0){alert('Add products first!');return;} let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let msg=`*ZIM GROCERIES ORDER - ${all.length} PRODUCTS*%0A*Shop:* Nsola Empire%0A*Payment:* ${payMethod}%0A%0A${cart.map(c=>`- ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*TOTAL: $${total.toFixed(2)}*%0A%0AConfirm & send proof to 0781022420`; window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');}
+function checkout(){if(cart.length==0){alert('Add products first!');return;} let total=cart.reduce((s,c)=>s+c.price*c.qty,0); let msg=`*ZIM GROCERIES ORDER*%0A*Shop:* Nsola Empire%0A*Payment:* ${payMethod}%0A%0A${cart.map(c=>`- ${c.product} x${c.qty} = $${(c.price*c.qty).toFixed(2)}`).join('%0A')}%0A%0A*TOTAL: $${total.toFixed(2)}*%0A%0AConfirm & send proof`; window.open(`https://wa.me/263781022420?text=${msg}`,'_blank');}
 loadExcel();
 </script>
 </body>
