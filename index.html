@@ -54,5 +54,78 @@ function openCart(){document.getElementById('cartModal').style.display='block';}
 function sendWhatsAppOrder(){let n=document.getElementById('custName').value.trim(),ph=document.getElementById('custPhone').value.trim(),loc=document.getElementById('custLocation').value.trim(),pay=document.getElementById('custPayment').value;if(!n||!ph||!loc){alert('Fill Name, Phone, Location!');return;}if(cart.length===0){alert('Cart empty!');return;}let msg=`*ZIM GROCERIES ZW ORDER* 🛒%0A%0ACustomer:${n}%0APhone:${ph}%0ALocation:${loc}%0APayment:${pay}%0A%0A*ITEMS:*%0A`;let tot=0;cart.forEach(i=>{msg+=`• ${i.name} x${i.qty} - $${(i.price*i.qty).toFixed(2)}%0A`;tot+=i.price*i.qty;});msg+=`%0A*TOTAL:$${tot.toFixed(2)}*%0ADeliver to:${loc}`;window.open('https://wa.me/263781022420?text='+msg,'_blank');}
 loadProducts();
 </script>
-</body>
+<!-- ZIM GROCERIES LEVEL 2 - CART UPGRADE -->
+<style>
+#zg-cart-btn{position:fixed;bottom:20px;right:20px;background:#FF6B00;color:#fff;border:none;border-radius:50px;padding:16px 24px;font-weight:bold;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:9999;cursor:pointer;font-size:16px}
+#zg-cart-count{background:#fff;color:#FF6B00;border-radius:50%;padding:2px 8px;margin-left:8px}
+#zg-cart-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:10000;justify-content:center;align-items:center}
+#zg-cart-box{background:#fff;width:90%;max-width:400px;border-radius:15px;padding:20px;max-height:80vh;overflow-y:auto}
+.zg-add-btn{background:#FF6B00;color:#fff;border:none;padding:8px 15px;border-radius:8px;cursor:pointer;margin-top:8px;font-weight:bold;width:100%}
+</style>
+
+<button id="zg-cart-btn" onclick="zgOpenCart()">🛒 Cart <span id="zg-cart-count">0</span></button>
+
+<div id="zg-cart-modal" onclick="if(event.target==this)zgCloseCart()">
+<div id="zg-cart-box">
+<h3 style="margin:0 0 15px 0">Your Cart</h3>
+<div id="zg-cart-items"></div>
+<div style="border-top:2px solid #eee;margin:15px 0;padding-top:15px">
+<b>Total: $<span id="zg-cart-total">0.00</span></b>
+</div>
+<button onclick="zgCheckout()" style="background:#25D366;color:#fff;border:none;width:100%;padding:14px;border-radius:10px;font-weight:bold;font-size:16px">Order on WhatsApp 0781022420</button>
+<button onclick="zgCloseCart()" style="background:#eee;border:none;width:100%;padding:10px;border-radius:10px;margin-top:10px">Continue Shopping</button>
+</div>
+</div>
+
+<script>
+let zgCart=[];
+function zgAddToCart(name,price){
+ let item=zgCart.find(i=>i.name==name);
+ if(item) item.qty++;
+ else zgCart.push({name,price:parseFloat(price),qty:1});
+ zgUpdateCart();
+ alert(name+" added to cart! 🛒");
+}
+function zgUpdateCart(){
+ document.getElementById('zg-cart-count').innerText=zgCart.reduce((s,i)=>s+i.qty,0);
+ let total=0;
+ let html='';
+ zgCart.forEach((i,idx)=>{
+   total+=i.price*i.qty;
+   html+=`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0f0"><span>${i.qty}x ${i.name}</span><span>$${(i.price*i.qty).toFixed(2)} <button onclick="zgCart.splice(${idx},1);zgUpdateCart()" style="border:none;background:#ff4444;color:#fff;border-radius:50%;width:22px;height:22px;margin-left:5px">x</button></span></div>`;
+ });
+ document.getElementById('zg-cart-items').innerHTML=html||'Cart empty - add products!';
+ document.getElementById('zg-cart-total').innerText=total.toFixed(2);
+}
+function zgOpenCart(){document.getElementById('zg-cart-modal').style.display='flex';zgUpdateCart();}
+function zgCloseCart(){document.getElementById('zg-cart-modal').style.display='none';}
+function zgCheckout(){
+ if(zgCart.length==0){alert('Cart empty!');return;}
+ let msg="Hello ZimGroceries Gwanda! I want to order:\n\n";
+ zgCart.forEach(i=>{msg+=`${i.qty}x ${i.name} - $${(i.price*i.qty).toFixed(2)}\n`;});
+ msg+=`\nTotal: $${document.getElementById('zg-cart-total').innerText}\nDelivery to Gwanda: __________\nMy name: __________`;
+ let url="https://wa.me/263781022420?text="+encodeURIComponent(msg);
+ window.open(url,'_blank');
+}
+
+// AUTO-ADD buttons to your existing products
+setTimeout(()=>{
+ // Try to find product cards - works with most templates
+ document.querySelectorAll('[class*="product"],[class*="item"],[class*="card"]').forEach(card=>{
+   if(card.querySelector('.zg-add-btn')) return;
+   let nameEl=card.querySelector('h3,h4,[class*="name"],[class*="title"]');
+   let priceEl=card.innerHTML.match(/\$[\d\.]+/);
+   if(nameEl && priceEl){
+     let name=nameEl.innerText.trim().substring(0,30);
+     let price=priceEl[0].replace('$','');
+     let btn=document.createElement('button');
+     btn.className='zg-add-btn';
+     btn.innerText='Add to Cart';
+     btn.onclick=()=>zgAddToCart(name,price);
+     card.appendChild(btn);
+   }
+ });
+},1000);
+</script>
+<!-- END UPGRADE --></body>
 </html>
